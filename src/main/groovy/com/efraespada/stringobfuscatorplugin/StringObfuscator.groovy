@@ -35,17 +35,13 @@ class StringObfuscatorPlugin implements Plugin<Project> {
                 CredentialUtils.init(module, variant, true)
                 key = CredentialUtils.getKey()
                 FileUtils.init(key, module, variant)
-
             }
 
             @Override
             void onMergeResourcesStarts(String module, String variant) {
-                println key
-                println ":" + module + ":mergeResources:" + variant
-
+                println ":" + module + ":mergeResources:" + variant + ":" + key
                 FileUtils.backupStringResources()
                 FileUtils.encryptStringResources()
-                // TODO encrypt strings
             }
 
             @Override
@@ -53,10 +49,7 @@ class StringObfuscatorPlugin implements Plugin<Project> {
                 FileUtils.restoreStringResources()
             }
         }))
-
     }
-
-
 }
 
 class StringObfuscatorExtension {

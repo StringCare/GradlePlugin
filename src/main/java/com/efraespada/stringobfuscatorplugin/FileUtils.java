@@ -37,7 +37,7 @@ public class FileUtils {
         String xml = "";
         String inputFilePath = path;
 
-        if (true) print("getting data from -> " + inputFilePath);
+        if (true) print("reading " + inputFilePath);
 
         String message = "";
 
@@ -84,7 +84,6 @@ public class FileUtils {
     public static void backupStringResources() {
         String currentPath = getCurrentPath();
         currentPath += module + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator;
-        PrintUtils.print(currentPath);
         File file = new File(currentPath);
         String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
         for (String dir : directories) {
@@ -110,15 +109,12 @@ public class FileUtils {
     public static void encryptStringResources() {
         String currentPath = getCurrentPath();
         currentPath += module + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator;
-        PrintUtils.print(currentPath);
         File file = new File(currentPath);
         String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
-        print(file.getAbsolutePath());
         for (String dir : directories) {
             String pathToEncrypt = currentPath + dir + File.separator;
 
             File toEncrypt = new File(pathToEncrypt + "strings.xml");
-            print(toEncrypt.getAbsolutePath());
             if (toEncrypt.exists()) {
                 String encrypted = find(getTextFromFilePath(toEncrypt.getAbsolutePath()));
                 writeFile(toEncrypt, encrypted);
