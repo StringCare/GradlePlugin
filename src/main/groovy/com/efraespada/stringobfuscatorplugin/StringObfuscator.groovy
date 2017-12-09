@@ -10,7 +10,7 @@ import org.gradle.api.logging.Logger
 
 class StringObfuscatorPlugin implements Plugin<Project> {
 
-    public Project project;
+    private Project project;
     private static String key = null;
 
     Logger logger
@@ -36,13 +36,23 @@ class StringObfuscatorPlugin implements Plugin<Project> {
                 PrintUtils.init(module, variant)
                 CredentialUtils.init(module, variant, true)
                 key = CredentialUtils.getKey()
+                FileUtils.init(key, module, variant)
 
             }
 
             @Override
-            void onMergeResources(String module, String variant) {
+            void onMergeResourcesStarts(String module, String variant) {
                 println key
                 println ":" + module + ":mergeResources:" + variant
+
+                FileUtils.backupStringResources()
+                FileUtils.encryptStringResources()
+                // TODO encrypt strings
+            }
+
+            @Override
+            void onMergeResourcesFinish(String module, String variant) {
+                FileUtils.restoreStringResources()
             }
         }))
 
