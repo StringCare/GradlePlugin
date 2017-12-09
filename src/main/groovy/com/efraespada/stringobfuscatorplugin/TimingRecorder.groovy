@@ -29,6 +29,12 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
     private StringObfuscatorPlugin plugin
     private GradleHandlerCallback callback
 
+    private static final String TEST = "Test";
+    private static final String PRE = "pre";
+    private static final String BUILD = "Build";
+    private static final String MERGE = "merge";
+    private static final String RESOURCES = "Resources";
+
     TimingRecorder(StringObfuscatorPlugin plugin, GradleHandlerCallback callback) {
         this.plugin = plugin
         this.callback = callback
@@ -37,20 +43,18 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
     @Override
     void beforeExecute(Task task) {
         clock = new Clock()
-        String test = "Test";
-        String pre = "pre";
-        String build = "Build";
-        String merge = "merge";
-        String resources = "Resources";
-        if (task.name.contains(pre) && task.name.contains(build) && !task.name.equals(pre + build) && !task.name.contains(test)) {
-            callback.onDataFound(task.project.name, PrintUtils.uncapitalize(task.name.substring(pre.length()).substring(0, task.name.substring(pre.length()).length() - build.length())));
-        } else if (task.name.contains(merge) && task.name.contains(resources) && !task.name.contains(test)) {
-            callback.onMergeResources(task.project.name, PrintUtils.uncapitalize(task.name.substring(merge.length()).substring(0, task.name.substring(merge.length()).length() - resources.length())));
+        if (task.name.contains(PRE) && task.name.contains(BUILD) && !task.name.equals(PRE + BUILD) && !task.name.contains(TEST)) {
+            callback.onDataFound(task.project.name, PrintUtils.uncapitalize(task.name.substring(PRE.length()).substring(0, task.name.substring(PRE.length()).length() - BUILD.length())));
+        } else if (task.name.contains(MERGE) && task.name.contains(RESOURCES) && !task.name.contains(TEST)) {
+            callback.onMergeResourcesStarts(task.project.name, PrintUtils.uncapitalize(task.name.substring(MERGE.length()).substring(0, task.name.substring(MERGE.length()).length() - RESOURCES.length())));
         }
     }
 
     @Override
     void afterExecute(Task task, TaskState taskState) {
+        if (task.name.contains(MERGE) && task.name.contains(RESOURCES) && !task.name.contains(TEST)) {
+            callback.onMergeResourcesFinish(task.project.name, PrintUtils.uncapitalize(task.name.substring(MERGE.length()).substring(0, task.name.substring(MERGE.length()).length() - RESOURCES.length())));
+        }
         timings << new Timing(
                 clock.getTimeInMs(),
                 task.getPath(),

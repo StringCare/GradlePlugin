@@ -4,13 +4,11 @@ import com.efraespada.stringobfuscatorplugin.interfaces.GradleHandlerCallback
 import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.ProjectEvaluationListener
-import org.gradle.api.ProjectState
 import org.gradle.api.logging.Logger
 
 class StringObfuscatorPlugin implements Plugin<Project> {
 
-    public Project project;
+    private Project project;
     private static String key = null;
 
     Logger logger
@@ -36,19 +34,22 @@ class StringObfuscatorPlugin implements Plugin<Project> {
                 PrintUtils.init(module, variant)
                 CredentialUtils.init(module, variant, true)
                 key = CredentialUtils.getKey()
-
+                FileUtils.init(key, module, variant)
             }
 
             @Override
-            void onMergeResources(String module, String variant) {
-                println key
-                println ":" + module + ":mergeResources:" + variant
+            void onMergeResourcesStarts(String module, String variant) {
+                println ":" + module + ":mergeResources:" + variant + ":" + key
+                FileUtils.backupStringResources()
+                FileUtils.encryptStringResources()
+            }
+
+            @Override
+            void onMergeResourcesFinish(String module, String variant) {
+                FileUtils.restoreStringResources()
             }
         }))
-
     }
-
-
 }
 
 class StringObfuscatorExtension {

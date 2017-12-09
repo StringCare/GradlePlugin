@@ -1,3 +1,5 @@
+def siteUrl = 'https://github.com/efraespada/StringObfuscatorPlugin'
+def gitUrl = 'https://github.com/efraespada/StringObfuscatorPlugin.git'
 
 buildscript {
     repositories {
@@ -5,6 +7,8 @@ buildscript {
         jcenter()
     }
     dependencies {
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1"
         classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.5.1'
     }
 }
@@ -14,13 +18,13 @@ apply plugin: 'maven'
 apply plugin: 'nexus'
 apply plugin: 'idea'
 apply plugin: 'java'
+apply plugin: 'com.jfrog.bintray'
 
 group 'com.efraespada'
-version '1.0-SNAPSHOT'
+version '0.3'
 
 
 sourceCompatibility = 1.8
-
 
 repositories {
     mavenCentral()
@@ -28,13 +32,53 @@ repositories {
 
 dependencies {
     compile gradleApi()
-
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 install {
     repositories.mavenInstaller {
-        pom.artifactId = 'stringobfuscatorplugin'
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                name 'StringObfuscatorPlugin'
+                url siteUrl
+                // Set your license
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'efraespada'
+                        name 'efraespada'
+                        email 'efraespada@gmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
     }
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintrayUser")
+    key = properties.getProperty("bintrayApiKey")
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "StringObfuscatorPlugin"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}
