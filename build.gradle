@@ -1,0 +1,40 @@
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.5.1'
+    }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'nexus'
+apply plugin: 'idea'
+apply plugin: 'java'
+
+group 'com.efraespada'
+version '1.0-SNAPSHOT'
+
+
+sourceCompatibility = 1.8
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.artifactId = 'stringobfuscatorplugin'
+    }
+}
+
