@@ -4,8 +4,6 @@ import com.efraespada.stringobfuscatorplugin.interfaces.GradleHandlerCallback
 import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.ProjectEvaluationListener
-import org.gradle.api.ProjectState
 import org.gradle.api.logging.Logger
 
 class StringObfuscatorPlugin implements Plugin<Project> {
