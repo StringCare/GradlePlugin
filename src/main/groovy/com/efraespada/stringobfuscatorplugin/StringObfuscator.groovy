@@ -8,6 +8,7 @@ import org.gradle.api.logging.Logger
 
 class StringObfuscatorPlugin implements Plugin<Project> {
 
+    private static final float VERSION = 0.3;
     private Project project;
     private static String key = null;
 
@@ -19,15 +20,28 @@ class StringObfuscatorPlugin implements Plugin<Project> {
     void apply(Project project) {
         this.project = project;
 
-        this.project.task('hello') {
+        createExtensions()
+
+        this.project.task('stop') {
             doLast {
-                println 'Hello from the GreetingPlugin'
+                String cmd = "";
+                if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                    cmd = "gradlew.bat";
+                } else {
+                    cmd = "gradlew";
+                    Runtime.getRuntime().exec("chmod +x ./" + cmd);
+                }
+
+                Runtime.getRuntime().exec("./" + cmd + " --stop");
+                Runtime.getRuntime().exec("./" + cmd + " clean");
             }
         }
 
         this.logger = this.project.logger
-        this.project.extensions.create("stringobfuscator", StringObfuscatorExtension)
-        reporterExtensions = this.project.extensions.reporters = project.container(ReporterExtension)
+        this.project.stringobfuscator.modules.all{ mod ->
+            PrintUtils.print(mod.name)
+            PrintUtils.print(mod.accessKey.size() + "")
+        }
         this.project.gradle.addBuildListener(new TimingRecorder(this, new GradleHandlerCallback() {
             @Override
             void onDataFound(String module, String variant) {
@@ -39,21 +53,51 @@ class StringObfuscatorPlugin implements Plugin<Project> {
 
             @Override
             void onMergeResourcesStarts(String module, String variant) {
-                println ":" + module + ":mergeResources:" + variant + ":" + key
+                PrintUtils.print(variant + ":" + key)
+                // PrintUtils.print("size: " + stringFiles.length)
+                PrintUtils.print("backupStringResources")
                 FileUtils.backupStringResources()
+                PrintUtils.print("encryptStringResources")
                 FileUtils.encryptStringResources()
             }
 
             @Override
             void onMergeResourcesFinish(String module, String variant) {
+                PrintUtils.print("restoreStringResources")
                 FileUtils.restoreStringResources()
             }
         }))
     }
+
+    private void createExtensions() {
+        project.extensions.add('stringobfuscator', StringObfuscatorExtension )
+        project.stringobfuscator.extensions.modules = project.container(StringObfuscatorConf)
+        project.stringobfuscator.modules.all {
+            accessKey = ['dev']
+        }
+    }
 }
 
 class StringObfuscatorExtension {
-    // Not in use at the moment.
+
+    StringObfuscatorExtension() {
+
+    }
+
+}
+
+class StringObfuscatorConf {
+    final String name
+    List<String> accessKey
+
+    StringObfuscatorConf(String name) {
+        this.name = name
+    }
+
+    @Override
+    String toString() {
+        return name
+    }
 }
 
 class ReporterExtension {

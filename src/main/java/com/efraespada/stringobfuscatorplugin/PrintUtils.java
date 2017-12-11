@@ -2,7 +2,6 @@ package com.efraespada.stringobfuscatorplugin;
 
 public class PrintUtils {
 
-    private final static String TAG = "stringobfuscatorplugin";
     private static String variant;
     private static String module;
 
@@ -20,8 +19,15 @@ public class PrintUtils {
      * @param message
      */
     public static void print(String message) {
+        print(message, false);
+    }
+    public static void print(String message, boolean tab) {
         if (variant != null && module != null) {
-            System.out.println(":" + module + ":" + TAG + " - " + message);
+            if (!tab) {
+                System.out.println(":" + module + ":" + message);
+            } else {
+                System.out.println("\t" + message);
+            }
         } else {
             System.out.println(message);
         }

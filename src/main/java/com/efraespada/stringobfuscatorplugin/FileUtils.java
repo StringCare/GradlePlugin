@@ -1,33 +1,23 @@
 package com.efraespada.stringobfuscatorplugin;
 
 import java.io.*;
-import java.nio.channels.FileChannel;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.efraespada.stringobfuscatorplugin.PrintUtils.print;
 
 public class FileUtils {
 
-    private static String variant;
     private static String module;
     private static String key;
 
     final static int maxToShow = 15;
-
-
-    private static final Map<String, String> files = new HashMap<>();
 
     private FileUtils() {
         // nothing to do here
     }
 
     public static void init(String key, String module, String variant) {
-        files.clear();
         FileUtils.key = key;
         FileUtils.module = module;
-        FileUtils.variant = variant;
     }
 
     public static String getTextFromFilePath(String path) {
@@ -36,8 +26,6 @@ public class FileUtils {
         }
         String xml = "";
         String inputFilePath = path;
-
-        if (true) print("reading " + inputFilePath);
 
         String message = "";
 
@@ -97,6 +85,7 @@ public class FileUtils {
                     toCheck.delete();
                 }
                 if (toCopy.exists()) {
+                    print("- " + toCopy.getParentFile().getName() + File.separator + toCopy.getName(), true);
                     copyFile(toCopy, toCheck);
                 }
             } catch (IOException e) {
@@ -116,6 +105,7 @@ public class FileUtils {
 
             File toEncrypt = new File(pathToEncrypt + "strings.xml");
             if (toEncrypt.exists()) {
+                PrintUtils.print("- " + toEncrypt.getParentFile().getName() + File.separator + toEncrypt.getName(), true);
                 String encrypted = find(getTextFromFilePath(toEncrypt.getAbsolutePath()));
                 writeFile(toEncrypt, encrypted);
             }
@@ -126,20 +116,22 @@ public class FileUtils {
         String currentPath = getCurrentPath() + module + File.separator + "resbackup" + File.separator;
         File file = new File(currentPath);
         String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
+        File toRestore;
         for (String dir : directories) {
             String pathToEncrypt = currentPath + dir + File.separator;
             String pathRes = getCurrentPath() + module + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator + dir + File.separator;
 
-            File toRestore = new File(pathToEncrypt + "strings.xml");
+            toRestore = new File(pathToEncrypt + "strings.xml");
             File toCheck = new File(pathRes + "strings.xml");
 
             try {
+                PrintUtils.print("- " + toCheck.getParentFile().getName() + File.separator + toCheck.getName(), true);
                 copyFile(toRestore, toCheck);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             toRestore.delete();
+            toRestore.getParentFile().delete();
         }
         if (file.isDirectory()) {
             file.delete();
@@ -192,7 +184,7 @@ public class FileUtils {
 
                 toShow = toShow.length() > maxToShow ? toShow.substring(0, maxToShow) + ".." : toShow;
                 encrypted = encrypted.length() > maxToShow ? encrypted.substring(0, maxToShow) + ".." : encrypted;
-                print("[" + toShow + "] - [" + encrypted + "]" + (hasExtra ? extra : ""));
+                print("\t[" + toShow + "] - [" + encrypted + "]" + (hasExtra ? extra : ""), true);
             } catch (Exception e) {
                 print("error on " + result);
                 e.printStackTrace();
@@ -203,8 +195,6 @@ public class FileUtils {
 
             if (xml1.indexOf(toFind1)  <= 0) break;
         }
-
-        print(content);
 
         return content;
     }
