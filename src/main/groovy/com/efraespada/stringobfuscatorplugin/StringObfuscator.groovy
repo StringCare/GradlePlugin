@@ -1,7 +1,5 @@
 package com.efraespada.stringobfuscatorplugin
 
-import com.efraespada.stringobfuscatorplugin.interfaces.GradleHandlerCallback
-import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
@@ -11,10 +9,9 @@ class StringObfuscatorPlugin implements Plugin<Project> {
     private static final float VERSION = 0.3;
     private Project project;
     private static String key = null;
+    private static Map<String, Config> moduleMap = new HashMap<>();
 
     Logger logger
-
-    NamedDomainObjectCollection<ReporterExtension> reporterExtensions
 
     @Override
     void apply(Project project) {
@@ -38,9 +35,27 @@ class StringObfuscatorPlugin implements Plugin<Project> {
         }
 
         this.logger = this.project.logger
-        this.project.stringobfuscator.modules.all{ mod ->
-            PrintUtils.print(mod.name)
-            PrintUtils.print(mod.accessKey.size() + "")
+        this.project.afterEvaluate {
+            this.project.stringobfuscator.modules.all { mod ->
+                Config config = new Config()
+                if (mod.stringFiles != null && mod.srcFolders != null) {
+                    config.setStringFiles(mod.stringFiles)
+                    config.setSrcFolders(mod.srcFolders)
+                    moduleMap.put(mod.name, config)
+                } else if (mod.srcFolders != null) {
+                    List<String> stg = new ArrayList<>();
+                    stg.add("strings.xml")
+                    config.setStringFiles(stg)
+                    config.setSrcFolders(mod.srcFolders)
+                    moduleMap.put(mod.name, config)
+                } else if (mod.stringFiles != null) {
+                    List<String> src = new ArrayList<>();
+                    src.add("src/main")
+                    config.setStringFiles(mod.stringFiles)
+                    config.setSrcFolders(src)
+                    moduleMap.put(mod.name, config)
+                }
+            }
         }
         this.project.gradle.addBuildListener(new TimingRecorder(this, new GradleHandlerCallback() {
             @Override
@@ -48,13 +63,23 @@ class StringObfuscatorPlugin implements Plugin<Project> {
                 PrintUtils.init(module, variant)
                 CredentialUtils.init(module, variant, true)
                 key = CredentialUtils.getKey()
-                FileUtils.init(key, module, variant)
+                if (moduleMap.containsKey(module)) {
+                    FileUtils.init(key, module, variant, moduleMap.get(module))
+                } else {
+                    Config config = new Config();
+                    List<String> stg = new ArrayList<>();
+                    stg.add("strings.xml")
+                    List<String> src = new ArrayList<>();
+                    src.add("src/main")
+                    config.setStringFiles(stg)
+                    config.setSrcFolders(src)
+                    FileUtils.init(key, module, variant, config)
+                }
             }
 
             @Override
             void onMergeResourcesStarts(String module, String variant) {
                 PrintUtils.print(variant + ":" + key)
-                // PrintUtils.print("size: " + stringFiles.length)
                 PrintUtils.print("backupStringResources")
                 FileUtils.backupStringResources()
                 PrintUtils.print("encryptStringResources")
@@ -70,11 +95,8 @@ class StringObfuscatorPlugin implements Plugin<Project> {
     }
 
     private void createExtensions() {
-        project.extensions.add('stringobfuscator', StringObfuscatorExtension )
+        project.extensions.create('stringobfuscator', StringObfuscatorExtension )
         project.stringobfuscator.extensions.modules = project.container(StringObfuscatorConf)
-        project.stringobfuscator.modules.all {
-            accessKey = ['dev']
-        }
     }
 }
 
@@ -87,8 +109,11 @@ class StringObfuscatorExtension {
 }
 
 class StringObfuscatorConf {
+
     final String name
-    List<String> accessKey
+    String lala
+    List<String> stringFiles
+    List<String> srcFolders
 
     StringObfuscatorConf(String name) {
         this.name = name
@@ -98,27 +123,5 @@ class StringObfuscatorConf {
     String toString() {
         return name
     }
-}
 
-class ReporterExtension {
-    final String name
-    final Map<String, String> options = [:]
-
-    ReporterExtension(String name) {
-        this.name = name
-    }
-
-    @Override
-    String toString() {
-        return name
-    }
-
-    def methodMissing(String name, args) {
-        // I'm feeling really, really naughty.
-        if (args.length == 1) {
-            options[name] = args[0].toString()
-        } else {
-            throw new MissingMethodException(name, this.class, args)
-        }
-    }
 }

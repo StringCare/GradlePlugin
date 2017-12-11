@@ -1,4 +1,4 @@
-package com.efraespada.stringobfuscatorplugin.interfaces;
+package com.efraespada.stringobfuscatorplugin;
 
 public interface GradleHandlerCallback {
 

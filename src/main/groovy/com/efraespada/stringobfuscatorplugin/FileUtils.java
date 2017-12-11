@@ -8,6 +8,7 @@ public class FileUtils {
 
     private static String module;
     private static String key;
+    private static Config config;
 
     final static int maxToShow = 15;
 
@@ -15,9 +16,10 @@ public class FileUtils {
         // nothing to do here
     }
 
-    public static void init(String key, String module, String variant) {
+    public static void init(String key, String module, String variant, Config config) {
         FileUtils.key = key;
         FileUtils.module = module;
+        FileUtils.config = config;
     }
 
     public static String getTextFromFilePath(String path) {
@@ -71,43 +73,58 @@ public class FileUtils {
     // detect multiple sourceSet res.srcDirs
     public static void backupStringResources() {
         String currentPath = getCurrentPath();
-        currentPath += module + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator;
-        File file = new File(currentPath);
-        String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
-        for (String dir : directories) {
-            String pathToCopy = currentPath + dir + File.separator;
-            String pathToCheck = getCurrentPath() + module + File.separator + "resbackup" + File.separator + dir + File.separator;
+        for (String folder : config.getSrcFolders()) {
+            currentPath += module + File.separator + folder + File.separator + "res" + File.separator;
+            File file = new File(currentPath);
+            String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
+            if (directories != null) {
+                for (String dir : directories) {
+                    String pathToCopy = currentPath + dir + File.separator;
+                    String pathToCheck = getCurrentPath() + module + File.separator + "resbackup" + File.separator + dir + File.separator;
 
-            try {
-                File toCopy = new File(pathToCopy + "strings.xml");
-                File toCheck = new File(pathToCheck + "strings.xml");
-                if (toCheck.exists()) {
-                    toCheck.delete();
+                    for (String sFile : config.getStringFiles()) {
+                        try {
+                            File toCopy = new File(pathToCopy + sFile);
+                            File toCheck = new File(pathToCheck + sFile);
+                            if (toCheck.exists()) {
+                                toCheck.delete();
+                            }
+                            if (toCopy.exists()) {
+                                print("- " + toCopy.getParentFile().getName() + File.separator + toCopy.getName(), true);
+                                copyFile(toCopy, toCheck);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            // TODO HANDLE ERROR
+                        }
+                    }
                 }
-                if (toCopy.exists()) {
-                    print("- " + toCopy.getParentFile().getName() + File.separator + toCopy.getName(), true);
-                    copyFile(toCopy, toCheck);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                // TODO HANDLE ERROR
+            } else {
+                PrintUtils.print("source folder not found: " + folder, true);
             }
         }
     }
 
     public static void encryptStringResources() {
         String currentPath = getCurrentPath();
-        currentPath += module + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator;
-        File file = new File(currentPath);
-        String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
-        for (String dir : directories) {
-            String pathToEncrypt = currentPath + dir + File.separator;
-
-            File toEncrypt = new File(pathToEncrypt + "strings.xml");
-            if (toEncrypt.exists()) {
-                PrintUtils.print("- " + toEncrypt.getParentFile().getName() + File.separator + toEncrypt.getName(), true);
-                String encrypted = find(getTextFromFilePath(toEncrypt.getAbsolutePath()));
-                writeFile(toEncrypt, encrypted);
+        for (String folder : config.getSrcFolders()) {
+            currentPath += module + File.separator + folder + File.separator + "res" + File.separator;
+            File file = new File(currentPath);
+            String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
+            if (directories != null) {
+                for (String dir : directories) {
+                    String pathToEncrypt = currentPath + dir + File.separator;
+                    for (String sFile : config.getStringFiles()) {
+                        File toEncrypt = new File(pathToEncrypt + sFile);
+                        if (toEncrypt.exists()) {
+                            PrintUtils.print("- " + toEncrypt.getParentFile().getName() + File.separator + toEncrypt.getName(), true);
+                            String encrypted = find(getTextFromFilePath(toEncrypt.getAbsolutePath()));
+                            writeFile(toEncrypt, encrypted);
+                        }
+                    }
+                }
+            } else {
+                PrintUtils.print("source folder not found: " + folder, true);
             }
         }
     }
@@ -116,25 +133,35 @@ public class FileUtils {
         String currentPath = getCurrentPath() + module + File.separator + "resbackup" + File.separator;
         File file = new File(currentPath);
         String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
-        File toRestore;
-        for (String dir : directories) {
-            String pathToEncrypt = currentPath + dir + File.separator;
-            String pathRes = getCurrentPath() + module + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator + dir + File.separator;
+        if (directories != null) {
+            File toRestore;
+            for (String dir : directories) {
+                String pathToRestore = currentPath + dir + File.separator;
+                for (String folder : config.getSrcFolders()) {
+                    String pathRes = getCurrentPath() + module + File.separator + folder + File.separator + "res" + File.separator + dir + File.separator;
 
-            toRestore = new File(pathToEncrypt + "strings.xml");
-            File toCheck = new File(pathRes + "strings.xml");
+                    for (String sFile : config.getStringFiles()) {
+                        toRestore = new File(pathToRestore + sFile);
+                        File toCheck = new File(pathRes + sFile);
+                        if (toRestore.exists()) {
+                            try {
+                                PrintUtils.print("- " + toCheck.getParentFile().getName() + File.separator + toCheck.getName(), true);
+                                copyFile(toRestore, toCheck);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
 
-            try {
-                PrintUtils.print("- " + toCheck.getParentFile().getName() + File.separator + toCheck.getName(), true);
-                copyFile(toRestore, toCheck);
-            } catch (IOException e) {
-                e.printStackTrace();
+                            toRestore.delete();
+                            toRestore.getParentFile().delete();
+                        }
+                    }
+                }
             }
-            toRestore.delete();
-            toRestore.getParentFile().delete();
-        }
-        if (file.isDirectory()) {
-            file.delete();
+            if (file.isDirectory()) {
+                file.delete();
+            }
+        } else {
+            PrintUtils.print("restore folder not found");
         }
     }
 
