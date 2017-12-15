@@ -1,8 +1,8 @@
-package com.efraespada.stringcare
+package com.stringcare
 
 import com.efraespada.stringobfuscatorplugin.PrintUtils
 import com.efraespada.stringobfuscatorplugin.interfaces.GradleHandlerCallback
-import com.efraespada.stringcare.util.Clock
+import com.stringcare.util.Clock
 import org.gradle.BuildResult
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener

@@ -41,7 +41,7 @@ install {
         pom {
             project {
                 packaging 'aar'
-                name 'stringcare:plugin'
+                name 'SAndroid'
                 url siteUrl
                 // Set your license
                 licenses {

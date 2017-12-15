@@ -1,4 +1,4 @@
-package com.efraespada.stringcare
+package com.stringcare
 
 import com.efraespada.stringobfuscatorplugin.CredentialUtils
 import com.efraespada.stringobfuscatorplugin.FileUtils

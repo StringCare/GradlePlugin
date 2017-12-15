@@ -1,4 +1,4 @@
-package com.efraespada.stringcare.util
+package com.stringcare.util
 
 class Clock {
     long startTimeInMs
