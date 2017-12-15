@@ -1,4 +1,4 @@
-package com.efraespada.stringobfuscatorplugin.util
+package com.efraespada.stringcare.util
 
 class Clock {
     long startTimeInMs

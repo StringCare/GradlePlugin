@@ -1,12 +1,15 @@
-package com.efraespada.stringobfuscatorplugin
+package com.efraespada.stringcare
 
+import com.efraespada.stringobfuscatorplugin.CredentialUtils
+import com.efraespada.stringobfuscatorplugin.FileUtils
+import com.efraespada.stringobfuscatorplugin.PrintUtils
 import com.efraespada.stringobfuscatorplugin.interfaces.GradleHandlerCallback
 import org.gradle.api.NamedDomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 
-class StringObfuscatorPlugin implements Plugin<Project> {
+class StringCarePlugin implements Plugin<Project> {
 
     private Project project;
     private static String key = null;
@@ -26,7 +29,7 @@ class StringObfuscatorPlugin implements Plugin<Project> {
         }
 
         this.logger = this.project.logger
-        this.project.extensions.create("stringobfuscator", StringObfuscatorExtension)
+        this.project.extensions.create("stringobfuscator", StringCareExtension)
         reporterExtensions = this.project.extensions.reporters = project.container(ReporterExtension)
         this.project.gradle.addBuildListener(new TimingRecorder(this, new GradleHandlerCallback() {
             @Override
@@ -52,7 +55,7 @@ class StringObfuscatorPlugin implements Plugin<Project> {
     }
 }
 
-class StringObfuscatorExtension {
+class StringCareExtension {
     // Not in use at the moment.
 }
 

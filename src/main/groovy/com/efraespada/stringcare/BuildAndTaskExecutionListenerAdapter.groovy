@@ -1,4 +1,4 @@
-package com.efraespada.stringobfuscatorplugin
+package com.efraespada.stringcare
 
 import org.gradle.BuildListener
 import org.gradle.BuildResult

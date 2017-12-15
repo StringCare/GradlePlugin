@@ -1,5 +1,5 @@
-def siteUrl = 'https://github.com/efraespada/StringObfuscatorPlugin'
-def gitUrl = 'https://github.com/efraespada/StringObfuscatorPlugin.git'
+def siteUrl = 'https://github.com/StringCare/AndroidPlugin'
+def gitUrl = 'https://github.com/StringCare/AndroidPlugin.git'
 
 buildscript {
     repositories {
@@ -21,7 +21,7 @@ apply plugin: 'java'
 apply plugin: 'com.jfrog.bintray'
 
 group 'com.efraespada'
-version '0.3'
+version '0.1'
 
 
 sourceCompatibility = 1.8
@@ -41,7 +41,7 @@ install {
         pom {
             project {
                 packaging 'aar'
-                name 'StringObfuscatorPlugin'
+                name 'stringcare:plugin'
                 url siteUrl
                 // Set your license
                 licenses {
@@ -75,7 +75,7 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = "StringObfuscatorPlugin"
+        name = "stringcare:plugin"
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]

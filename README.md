@@ -1,3 +1,5 @@
+repo under construction, sorry
+
 # AndroidObfuscatorPlugin
 
 Gradle implementation
@@ -5,17 +7,17 @@ Gradle implementation
 
 root_project/build.gradle
 ```groovy
+apply plugin: com.efraespada.stringobfuscatorplugin.StringObfuscatorPlugin
+
 buildscript {
     repositories {
         mavenLocal()
     }
     dependencies {
         // ...
-        classpath files('../AndroidObfuscatorPlugin/build/libs/stringobfuscatorplugin-1.0-SNAPSHOT.jar')
+        classpath files('../AndroidLibrary/build/libs/stringobfuscatorplugin-1.0-SNAPSHOT.jar')
         // ...
     }
 }
 
-// bottom
-apply plugin: com.efraespada.stringobfuscatorplugin.StringObfuscatorPlugin
 ```
