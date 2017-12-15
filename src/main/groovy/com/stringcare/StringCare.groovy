@@ -9,7 +9,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 
-class StringCarePlugin implements Plugin<Project> {
+class SCPlugin implements Plugin<Project> {
 
     private Project project;
     private static String key = null;
