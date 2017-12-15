@@ -1,11 +1,11 @@
-package com.efraespada.stringobfuscatorplugin;
+package com.stringcare;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import static com.efraespada.stringobfuscatorplugin.PrintUtils.print;
+import static com.stringcare.PrintUtils.print;
 
 public class CredentialUtils {
 

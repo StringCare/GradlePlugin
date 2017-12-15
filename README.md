@@ -1,23 +1,55 @@
-repo under construction, sorry
-
-# AndroidObfuscatorPlugin
+# String Care Android Plugin
 
 Gradle implementation
 ------------
 
 root_project/build.gradle
 ```groovy
-apply plugin: com.efraespada.stringobfuscatorplugin.StringObfuscatorPlugin
+// root_project/build.gradle
+
+apply plugin: com.stringcare.SCPlugin
 
 buildscript {
+
+    ext {
+        stringcare_version = '0.1'
+    }
+
     repositories {
-        mavenLocal()
+        jcenter()
     }
+
     dependencies {
-        // ...
-        classpath files('../AndroidLibrary/build/libs/stringobfuscatorplugin-1.0-SNAPSHOT.jar')
-        // ...
+        classpath "com.stringcare:plugin:$stringcare_version"
     }
+
 }
 
+stringcare {
+
+    modules {
+
+        sample {
+            stringFiles = ['strings.xml',"other_file.xml"]
+            srcFolders = ['src/main', "other_folder"]
+        }
+
+        // root_folder/sample/src/main/res/.../strings.xml
+        // root_folder/sample/src/main/res/.../other_file.xml
+        // root_folder/sample/other_folder/res/.../strings.xml
+        // root_folder/sample/other_folder/res/.../other_file.xml
+
+        other_module {
+            srcFolders = ['src/moduleB']
+        }
+
+        // root_folder/other_module/src/moduleB/res/.../strings.xml
+
+        other_module_ {} //
+
+        // root_folder/other_module_/src/main/res/.../strings.xml
+
+    }
+
+}
 ```

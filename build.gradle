@@ -20,7 +20,7 @@ apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'com.jfrog.bintray'
 
-group 'com.efraespada'
+group 'com.stringcare'
 version '0.1'
 
 
@@ -41,7 +41,7 @@ install {
         pom {
             project {
                 packaging 'aar'
-                name 'SAndroid'
+                name 'StringCareAndroidPlugin'
                 url siteUrl
                 // Set your license
                 licenses {
@@ -75,7 +75,7 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = "stringcare:plugin"
+        name = "StringCareAndroidPlugin"
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]

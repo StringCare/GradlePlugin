@@ -1,7 +1,5 @@
 package com.stringcare
 
-import com.efraespada.stringobfuscatorplugin.PrintUtils
-import com.efraespada.stringobfuscatorplugin.interfaces.GradleHandlerCallback
 import com.stringcare.util.Clock
 import org.gradle.BuildResult
 import org.gradle.api.Task
@@ -67,7 +65,7 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
 
     @Override
     void buildFinished(BuildResult result) {
-        plugin.reporterExtensions.each { it.run timings; it.onBuildResult result }
+        // plugin.reporterExtensions.each { it.run timings; it.onBuildResult result }
     }
 
     List<String> getTasks() {
