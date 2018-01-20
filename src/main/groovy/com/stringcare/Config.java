@@ -1,4 +1,4 @@
-package com.efraespada.stringobfuscatorplugin;
+package com.stringcare;
 
 import java.util.List;
 

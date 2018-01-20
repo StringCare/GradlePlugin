@@ -1,8 +1,8 @@
-package com.efraespada.stringobfuscatorplugin;
+package com.stringcare;
 
 import java.io.*;
 
-import static com.efraespada.stringobfuscatorplugin.PrintUtils.print;
+import static com.stringcare.PrintUtils.print;
 
 public class FileUtils {
 

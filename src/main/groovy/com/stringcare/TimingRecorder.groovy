@@ -1,6 +1,7 @@
-package com.efraespada.stringobfuscatorplugin
+package com.stringcare
 
-import com.efraespada.stringobfuscatorplugin.util.Clock
+
+import com.stringcare.util.Clock
 import org.gradle.BuildResult
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
@@ -25,7 +26,7 @@ class Timing {
 class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements TaskExecutionListener {
     private Clock clock
     private List<Timing> timings = []
-    private StringObfuscatorPlugin plugin
+    private SCPlugin plugin
     private GradleHandlerCallback callback
 
     private static final String TEST = "Test";
@@ -34,7 +35,7 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
     private static final String MERGE = "merge";
     private static final String RESOURCES = "Resources";
 
-    TimingRecorder(StringObfuscatorPlugin plugin, GradleHandlerCallback callback) {
+    TimingRecorder(SCPlugin plugin, GradleHandlerCallback callback) {
         this.plugin = plugin
         this.callback = callback
     }

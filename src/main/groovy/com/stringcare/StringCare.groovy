@@ -1,10 +1,10 @@
-package com.efraespada.stringobfuscatorplugin
+package com.stringcare
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 
-class StringObfuscatorPlugin implements Plugin<Project> {
+class SCPlugin implements Plugin<Project> {
 
     private static final float VERSION = 0.3;
     private Project project;
@@ -36,7 +36,7 @@ class StringObfuscatorPlugin implements Plugin<Project> {
 
         this.logger = this.project.logger
         this.project.afterEvaluate {
-            this.project.stringobfuscator.modules.all { mod ->
+            this.project.stringcare.modules.all { mod ->
                 Config config = new Config()
                 if (mod.stringFiles != null && mod.srcFolders != null) {
                     config.setStringFiles(mod.stringFiles)
@@ -95,27 +95,27 @@ class StringObfuscatorPlugin implements Plugin<Project> {
     }
 
     private void createExtensions() {
-        project.extensions.create('stringobfuscator', StringObfuscatorExtension )
-        project.stringobfuscator.extensions.modules = project.container(StringObfuscatorConf)
+        project.extensions.create('stringcare', Extension )
+        project.stringcare.extensions.modules = project.container(Conf)
     }
 }
 
-class StringObfuscatorExtension {
+class Extension {
 
-    StringObfuscatorExtension() {
+    Extension() {
 
     }
 
 }
 
-class StringObfuscatorConf {
+class Conf {
 
     final String name
     String lala
     List<String> stringFiles
     List<String> srcFolders
 
-    StringObfuscatorConf(String name) {
+    Conf(String name) {
         this.name = name
     }
 

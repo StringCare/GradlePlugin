@@ -1,4 +1,4 @@
-package com.efraespada.stringobfuscatorplugin;
+package com.stringcare;
 
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
