@@ -1,25 +1,12 @@
-package com.stringcare;
 
 import java.io.*;
 
-import static com.stringcare.PrintUtils.print;
-
 public class FileUtils {
-
-    private static String module;
-    private static String key;
-    private static Config config;
 
     final static int maxToShow = 15;
 
     private FileUtils() {
         // nothing to do here
-    }
-
-    public static void init(String key, String module, String variant, Config config) {
-        FileUtils.key = key;
-        FileUtils.module = module;
-        FileUtils.config = config;
     }
 
     public static String getTextFromFilePath(String path) {
@@ -49,7 +36,7 @@ public class FileUtils {
         return message;
     }
 
-    private static String getCurrentPath() {
+    private static String getCurrentPath(String module) {
         String path = new File(".").getAbsolutePath().replace(".", "").replace(module + File.separator,"");
         return path;
     }
@@ -71,8 +58,8 @@ public class FileUtils {
     }
 
     // detect multiple sourceSet res.srcDirs
-    public static void backupStringResources() {
-        String currentPath = getCurrentPath();
+    public static void backupStringResources(String module, Config config) {
+        String currentPath = getCurrentPath(module);
         for (String folder : config.getSrcFolders()) {
             currentPath += module + File.separator + folder + File.separator + "res" + File.separator;
             File file = new File(currentPath);
@@ -80,7 +67,7 @@ public class FileUtils {
             if (directories != null) {
                 for (String dir : directories) {
                     String pathToCopy = currentPath + dir + File.separator;
-                    String pathToCheck = getCurrentPath() + module + File.separator + "resbackup" + File.separator + dir + File.separator;
+                    String pathToCheck = getCurrentPath(module) + module + File.separator + "resbackup" + File.separator + dir + File.separator;
 
                     for (String sFile : config.getStringFiles()) {
                         try {
@@ -90,7 +77,7 @@ public class FileUtils {
                                 toCheck.delete();
                             }
                             if (toCopy.exists()) {
-                                print("- " + toCopy.getParentFile().getName() + File.separator + toCopy.getName(), true);
+                                PrintUtils.print("- " + toCopy.getParentFile().getName() + File.separator + toCopy.getName(), true);
                                 copyFile(toCopy, toCheck);
                             }
                         } catch (IOException e) {
@@ -100,13 +87,13 @@ public class FileUtils {
                     }
                 }
             } else {
-                PrintUtils.print("source folder not found: " + folder, true);
+                PrintUtils.print(module, "source folder not found: " + folder, true);
             }
         }
     }
 
-    public static void encryptStringResources() {
-        String currentPath = getCurrentPath();
+    public static void encryptStringResources(String module, Config config, String key) {
+        String currentPath = getCurrentPath(module);
         for (String folder : config.getSrcFolders()) {
             currentPath += module + File.separator + folder + File.separator + "res" + File.separator;
             File file = new File(currentPath);
@@ -118,19 +105,19 @@ public class FileUtils {
                         File toEncrypt = new File(pathToEncrypt + sFile);
                         if (toEncrypt.exists()) {
                             PrintUtils.print("- " + toEncrypt.getParentFile().getName() + File.separator + toEncrypt.getName(), true);
-                            String encrypted = find(getTextFromFilePath(toEncrypt.getAbsolutePath()));
+                            String encrypted = find(getTextFromFilePath(toEncrypt.getAbsolutePath()), key);
                             writeFile(toEncrypt, encrypted);
                         }
                     }
                 }
             } else {
-                PrintUtils.print("source folder not found: " + folder, true);
+                PrintUtils.print(module, "source folder not found: " + folder, true);
             }
         }
     }
 
-    public static void restoreStringResources() {
-        String currentPath = getCurrentPath() + module + File.separator + "resbackup" + File.separator;
+    public static void restoreStringResources(String module, Config config) {
+        String currentPath = getCurrentPath(module) + module + File.separator + "resbackup" + File.separator;
         File file = new File(currentPath);
         String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
         if (directories != null) {
@@ -138,7 +125,7 @@ public class FileUtils {
             for (String dir : directories) {
                 String pathToRestore = currentPath + dir + File.separator;
                 for (String folder : config.getSrcFolders()) {
-                    String pathRes = getCurrentPath() + module + File.separator + folder + File.separator + "res" + File.separator + dir + File.separator;
+                    String pathRes = getCurrentPath(module) + module + File.separator + folder + File.separator + "res" + File.separator + dir + File.separator;
 
                     for (String sFile : config.getStringFiles()) {
                         toRestore = new File(pathToRestore + sFile);
@@ -161,7 +148,7 @@ public class FileUtils {
                 file.delete();
             }
         } else {
-            PrintUtils.print("restore folder not found");
+            PrintUtils.print(module, "restore folder not found", true);
         }
     }
 
@@ -181,7 +168,7 @@ public class FileUtils {
         return encrypted;
     }
 
-    public static String find(String xmlO) {
+    public static String find(String xmlO, String key) {
         String content = xmlO;
         String toFind1 = "hidden=\"true\"";
 
@@ -211,9 +198,9 @@ public class FileUtils {
 
                 toShow = toShow.length() > maxToShow ? toShow.substring(0, maxToShow) + ".." : toShow;
                 encrypted = encrypted.length() > maxToShow ? encrypted.substring(0, maxToShow) + ".." : encrypted;
-                print("\t[" + toShow + "] - [" + encrypted + "]" + (hasExtra ? extra : ""), true);
+                PrintUtils.print("\t[" + toShow + "] - [" + encrypted + "]" + (hasExtra ? extra : ""), true);
             } catch (Exception e) {
-                print("error on " + result);
+                PrintUtils.print("error on " + result);
                 e.printStackTrace();
             }
 

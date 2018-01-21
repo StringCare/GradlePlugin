@@ -1,6 +1,4 @@
-package com.stringcare
 
-import com.stringcare.util.Clock
 import org.gradle.BuildResult
 import org.gradle.api.Task
 import org.gradle.api.execution.TaskExecutionListener
@@ -23,9 +21,9 @@ class Timing {
 }
 
 class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements TaskExecutionListener {
-    private Clock clock
+    private ClockT clock
     private List<Timing> timings = []
-    private SCPlugin plugin
+    private StringCare plugin
     private GradleHandlerCallback callback
 
     private static final String TEST = "Test";
@@ -34,14 +32,14 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
     private static final String MERGE = "merge";
     private static final String RESOURCES = "Resources";
 
-    TimingRecorder(SCPlugin plugin, GradleHandlerCallback callback) {
+    TimingRecorder(StringCare plugin, GradleHandlerCallback callback) {
         this.plugin = plugin
         this.callback = callback
     }
 
     @Override
     void beforeExecute(Task task) {
-        clock = new Clock()
+        clock = new ClockT()
         if (task.name.contains(PRE) && task.name.contains(BUILD) && !task.name.equals(PRE + BUILD) && !task.name.contains(TEST)) {
             callback.onDataFound(task.project.name, PrintUtils.uncapitalize(task.name.substring(PRE.length()).substring(0, task.name.substring(PRE.length()).length() - BUILD.length())));
         } else if (task.name.contains(MERGE) && task.name.contains(RESOURCES) && !task.name.contains(TEST)) {

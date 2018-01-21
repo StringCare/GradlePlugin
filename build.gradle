@@ -1,3 +1,4 @@
+
 def siteUrl = 'https://github.com/StringCare/AndroidPlugin'
 def gitUrl = 'https://github.com/StringCare/AndroidPlugin.git'
 
@@ -14,6 +15,8 @@ buildscript {
 }
 
 apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'nexus'
 apply plugin: 'idea'
@@ -21,19 +24,24 @@ apply plugin: 'java'
 apply plugin: 'com.jfrog.bintray'
 
 group 'com.stringcare'
-version '0.1'
-
+version '0.3'
 
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
+    // Use the latest Groovy version for building this library
+    compile 'org.codehaus.groovy:groovy-all:2.4.12'
     compile gradleApi()
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    // Use the awesome Spock testing and specification framework
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }
+
 
 install {
     repositories.mavenInstaller {
@@ -82,3 +90,4 @@ bintray {
         publish = true
     }
 }
+

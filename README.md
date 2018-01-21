@@ -1,3 +1,7 @@
+<p align="center"><img width="10%" vspace="20" src="https://raw.githubusercontent.com/StringCare/AndroidLibrary/develop/sample/src/main/res/mipmap-xxxhdpi/ic_launcher.png"></p>
+
+
+
 # String Care Android Plugin
 
 Gradle implementation
@@ -7,12 +11,10 @@ root_project/build.gradle
 ```groovy
 // root_project/build.gradle
 
-apply plugin: com.stringcare.SCPlugin
-
 buildscript {
 
     ext {
-        stringcare_version = '0.1'
+        stringcare_version = '0.3'
     }
 
     repositories {
@@ -24,8 +26,12 @@ buildscript {
     }
 
 }
-
+ 
+apply plugin: StringCare
+ 
 stringcare {
+
+    debug true   // prints detail build variant info
 
     modules {
 
