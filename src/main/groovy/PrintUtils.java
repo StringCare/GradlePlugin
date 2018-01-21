@@ -1,4 +1,3 @@
-package com.stringcare;
 
 public class PrintUtils {
 

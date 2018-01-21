@@ -1,11 +1,8 @@
-package com.stringcare;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import static com.stringcare.PrintUtils.print;
 
 public class CredentialUtils {
 
@@ -80,7 +77,7 @@ public class CredentialUtils {
         } else if (line.toLowerCase().contains("variant") && moduleLocated) {
             String locV = line.split(" ")[1];
             if (locV.equals(variant)) {
-                print("Build Variant: " + locV);
+                PrintUtils.print("Build Variant: " + locV);
                 variantLocated = true;
             }
         } else if (line.toLowerCase().contains(":" + module)) {
@@ -88,7 +85,7 @@ public class CredentialUtils {
         }
 
         if (mustPrint)
-            print(line);
+            PrintUtils.print(line);
     }
 
 }

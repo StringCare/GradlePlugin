@@ -1,8 +1,5 @@
-package com.stringcare;
 
 import java.io.*;
-
-import static com.stringcare.PrintUtils.print;
 
 public class FileUtils {
 
@@ -90,7 +87,7 @@ public class FileUtils {
                                 toCheck.delete();
                             }
                             if (toCopy.exists()) {
-                                print("- " + toCopy.getParentFile().getName() + File.separator + toCopy.getName(), true);
+                                PrintUtils.print("- " + toCopy.getParentFile().getName() + File.separator + toCopy.getName(), true);
                                 copyFile(toCopy, toCheck);
                             }
                         } catch (IOException e) {
@@ -211,9 +208,9 @@ public class FileUtils {
 
                 toShow = toShow.length() > maxToShow ? toShow.substring(0, maxToShow) + ".." : toShow;
                 encrypted = encrypted.length() > maxToShow ? encrypted.substring(0, maxToShow) + ".." : encrypted;
-                print("\t[" + toShow + "] - [" + encrypted + "]" + (hasExtra ? extra : ""), true);
+                PrintUtils.print("\t[" + toShow + "] - [" + encrypted + "]" + (hasExtra ? extra : ""), true);
             } catch (Exception e) {
-                print("error on " + result);
+                PrintUtils.print("error on " + result);
                 e.printStackTrace();
             }
 

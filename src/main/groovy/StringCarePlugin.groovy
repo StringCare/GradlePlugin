@@ -1,10 +1,9 @@
-package com.stringcare
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 
-class SCPlugin implements Plugin<Project> {
+class StringCare implements Plugin<Project> {
 
     private static final float VERSION = 0.3;
     private Project project;

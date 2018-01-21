@@ -1,13 +1,11 @@
-package com.stringcare.util
-
-class Clock {
+class ClockT {
     long startTimeInMs
 
-    Clock() {
+    public ClockT() {
         this(System.currentTimeMillis())
     }
 
-    Clock(long startTimeInMs) {
+    public ClockT(long startTimeInMs) {
         this.startTimeInMs = startTimeInMs
     }
 

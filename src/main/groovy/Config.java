@@ -1,4 +1,3 @@
-package com.stringcare;
 
 import java.util.List;
 
