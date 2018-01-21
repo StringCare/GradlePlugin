@@ -7,8 +7,6 @@ root_project/build.gradle
 ```groovy
 // root_project/build.gradle
 
-apply plugin: com.stringcare.SCPlugin
-
 buildscript {
 
     ext {
@@ -24,7 +22,9 @@ buildscript {
     }
 
 }
-
+ 
+apply plugin: StringCare
+ 
 stringcare {
 
     modules {
