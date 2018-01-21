@@ -10,7 +10,7 @@ root_project/build.gradle
 buildscript {
 
     ext {
-        stringcare_version = '0.1'
+        stringcare_version = '0.3'
     }
 
     repositories {
@@ -26,6 +26,8 @@ buildscript {
 apply plugin: StringCare
  
 stringcare {
+
+    debug true   // prints detail build variant info
 
     modules {
 
