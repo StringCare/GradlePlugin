@@ -8,14 +8,16 @@ class StringCare implements Plugin<Project> {
     private static final float VERSION = 0.3;
     private Project project;
     private static String key = null;
+    private static boolean debug;
     private static Map<String, Config> moduleMap = new HashMap<>();
+
+    def extension = null
 
     Logger logger
 
     @Override
     void apply(Project project) {
         this.project = project;
-
         createExtensions()
 
         this.project.task('stop') {
@@ -35,6 +37,7 @@ class StringCare implements Plugin<Project> {
 
         this.logger = this.project.logger
         this.project.afterEvaluate {
+            debug = extension.debug != null && extension.debug ? extension.debug : false
             this.project.stringcare.modules.all { mod ->
                 Config config = new Config()
                 if (mod.stringFiles != null && mod.srcFolders != null) {
@@ -59,11 +62,20 @@ class StringCare implements Plugin<Project> {
         this.project.gradle.addBuildListener(new TimingRecorder(this, new GradleHandlerCallback() {
             @Override
             void onDataFound(String module, String variant) {
-                PrintUtils.init(module, variant)
-                CredentialUtils.init(module, variant, true)
-                key = CredentialUtils.getKey()
+                // nothing to do here
+            }
+
+            @Override
+            void onMergeResourcesStarts(String module, String variant) {
+                String key = CredentialUtils.getKey(module, variant, debug);
+
                 if (moduleMap.containsKey(module)) {
-                    FileUtils.init(key, module, variant, moduleMap.get(module))
+                    PrintUtils.print(module, variant + ":" + key)
+                    PrintUtils.print(module, "backupStringResources")
+                    FileUtils.backupStringResources(module, moduleMap.get(module))
+                    PrintUtils.print(module, "encryptStringResources")
+
+                    FileUtils.encryptStringResources(module, moduleMap.get(module), key)
                 } else {
                     Config config = new Config();
                     List<String> stg = new ArrayList<>();
@@ -72,34 +84,45 @@ class StringCare implements Plugin<Project> {
                     src.add("src/main")
                     config.setStringFiles(stg)
                     config.setSrcFolders(src)
-                    FileUtils.init(key, module, variant, config)
+
+                    PrintUtils.print(module, variant + ":" + key)
+                    PrintUtils.print(module, "backupStringResources")
+                    FileUtils.backupStringResources(module, config)
+                    PrintUtils.print(module, "encryptStringResources")
+                    FileUtils.encryptStringResources(module, config, key)
                 }
             }
 
             @Override
-            void onMergeResourcesStarts(String module, String variant) {
-                PrintUtils.print(variant + ":" + key)
-                PrintUtils.print("backupStringResources")
-                FileUtils.backupStringResources()
-                PrintUtils.print("encryptStringResources")
-                FileUtils.encryptStringResources()
-            }
-
-            @Override
             void onMergeResourcesFinish(String module, String variant) {
-                PrintUtils.print("restoreStringResources")
-                FileUtils.restoreStringResources()
+                if (moduleMap.containsKey(module)) {
+                    PrintUtils.print(module, "restoreStringResources")
+                    FileUtils.restoreStringResources(module, moduleMap.get(module))
+                } else {
+                    Config config = new Config();
+                    List<String> stg = new ArrayList<>();
+                    stg.add("strings.xml")
+                    List<String> src = new ArrayList<>();
+                    src.add("src/main")
+                    config.setStringFiles(stg)
+                    config.setSrcFolders(src)
+
+                    PrintUtils.print(module, "restoreStringResources")
+                    FileUtils.restoreStringResources(module, config)
+                }
             }
         }))
     }
 
     private void createExtensions() {
-        project.extensions.create('stringcare', Extension )
+        extension = project.extensions.create('stringcare', Extension )
         project.stringcare.extensions.modules = project.container(Conf)
     }
 }
 
 class Extension {
+
+    boolean debug
 
     Extension() {
 
@@ -110,7 +133,6 @@ class Extension {
 class Conf {
 
     final String name
-    String lala
     List<String> stringFiles
     List<String> srcFolders
 

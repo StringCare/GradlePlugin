@@ -32,6 +32,24 @@ public class PrintUtils {
         }
     }
 
+    public static void print(String module, String message, boolean tab) {
+        if (module != null) {
+            if (!tab) {
+                System.out.println(":" + module + ":" + message);
+            } else {
+                System.out.println("\t" + message);
+            }
+        } else {
+            System.out.println(message);
+        }
+    }
+
+    public static void print(String module, String message) {
+        print(module, message, false);
+    }
+
+
+
     public static String uncapitalize(String value) {
         return value.substring(0, 1).toLowerCase() + value.substring(1, value.length());
     }
