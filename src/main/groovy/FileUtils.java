@@ -58,10 +58,10 @@ public class FileUtils {
     }
 
     // detect multiple sourceSet res.srcDirs
-    public static void backupStringResources(String module, Config config) {
-        String currentPath = getCurrentPath(module);
+    public static void backupStringResources(String module, Config config, boolean debug) {
+        String path = getCurrentPath(module);
         for (String folder : config.getSrcFolders()) {
-            currentPath += module + File.separator + folder + File.separator + "res" + File.separator;
+            String currentPath = path + module + File.separator + folder + File.separator + "res" + File.separator;
             File file = new File(currentPath);
             String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
             if (directories != null) {
@@ -77,8 +77,11 @@ public class FileUtils {
                                 toCheck.delete();
                             }
                             if (toCopy.exists()) {
-                                PrintUtils.print("- " + toCopy.getParentFile().getName() + File.separator + toCopy.getName(), true);
+                                PrintUtils.print(module, "- " + toCopy.getParentFile().getName() + File.separator + toCopy.getName(), true);
                                 copyFile(toCopy, toCheck);
+                                if (debug) {
+                                    PrintUtils.print(module, "backuping file: " + toCopy.getPath(), true);
+                                }
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -87,15 +90,18 @@ public class FileUtils {
                     }
                 }
             } else {
-                PrintUtils.print(module, "source folder not found: " + folder, true);
-            }
+                if (debug) {
+                    PrintUtils.print(module, "source folder not found: " + currentPath, true);
+                } else {
+                    PrintUtils.print(module, "source folder not found: " + folder, true);
+                }            }
         }
     }
 
-    public static void encryptStringResources(String module, Config config, String key) {
-        String currentPath = getCurrentPath(module);
+    public static void encryptStringResources(String module, Config config, String key, boolean debug) {
+        String path = getCurrentPath(module);
         for (String folder : config.getSrcFolders()) {
-            currentPath += module + File.separator + folder + File.separator + "res" + File.separator;
+            String currentPath = path + module + File.separator + folder + File.separator + "res" + File.separator;
             File file = new File(currentPath);
             String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
             if (directories != null) {
@@ -104,19 +110,28 @@ public class FileUtils {
                     for (String sFile : config.getStringFiles()) {
                         File toEncrypt = new File(pathToEncrypt + sFile);
                         if (toEncrypt.exists()) {
-                            PrintUtils.print("- " + toEncrypt.getParentFile().getName() + File.separator + toEncrypt.getName(), true);
-                            String encrypted = find(getTextFromFilePath(toEncrypt.getAbsolutePath()), key);
+                            PrintUtils.print(module, "- " + toEncrypt.getParentFile().getName() + File.separator + toEncrypt.getName(), true);
+                            String encrypted = find(module, getTextFromFilePath(toEncrypt.getAbsolutePath()), key, debug);
                             writeFile(toEncrypt, encrypted);
+                            if (debug) {
+                                PrintUtils.print(module, "writing file: " + toEncrypt.getPath(), true);
+                            }
+                        } else if (debug) {
+                            PrintUtils.print(module, "source file not exist: " + pathToEncrypt + sFile, true);
                         }
                     }
                 }
             } else {
-                PrintUtils.print(module, "source folder not found: " + folder, true);
+                if (debug) {
+                    PrintUtils.print(module, "source folder not found: " + currentPath, true);
+                } else {
+                    PrintUtils.print(module, "source folder not found: " + folder, true);
+                }
             }
         }
     }
 
-    public static void restoreStringResources(String module, Config config) {
+    public static void restoreStringResources(String module, Config config, boolean debug) {
         String currentPath = getCurrentPath(module) + module + File.separator + "resbackup" + File.separator;
         File file = new File(currentPath);
         String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
@@ -132,8 +147,11 @@ public class FileUtils {
                         File toCheck = new File(pathRes + sFile);
                         if (toRestore.exists()) {
                             try {
-                                PrintUtils.print("- " + toCheck.getParentFile().getName() + File.separator + toCheck.getName(), true);
+                                PrintUtils.print(module,"- " + toCheck.getParentFile().getName() + File.separator + toCheck.getName(), true);
                                 copyFile(toRestore, toCheck);
+                                if (debug) {
+                                    PrintUtils.print(module, "restoring: " + toRestore.getPath(), true);
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -146,9 +164,16 @@ public class FileUtils {
             }
             if (file.isDirectory()) {
                 file.delete();
+                if (debug) {
+                    PrintUtils.print(module, "temp source folder removed: " + file.getPath(), true);
+                }
             }
         } else {
-            PrintUtils.print(module, "restore folder not found", true);
+            if (debug) {
+                PrintUtils.print(module, "restore folder not found: " + currentPath, true);
+            } else {
+                PrintUtils.print(module, "restore folder not found", true);
+            }
         }
     }
 
@@ -168,7 +193,7 @@ public class FileUtils {
         return encrypted;
     }
 
-    public static String find(String xmlO, String key) {
+    public static String find(String module, String xmlO, String key, boolean debug) {
         String content = xmlO;
         String toFind1 = "hidden=\"true\"";
 
@@ -198,9 +223,9 @@ public class FileUtils {
 
                 toShow = toShow.length() > maxToShow ? toShow.substring(0, maxToShow) + ".." : toShow;
                 encrypted = encrypted.length() > maxToShow ? encrypted.substring(0, maxToShow) + ".." : encrypted;
-                PrintUtils.print("\t[" + toShow + "] - [" + encrypted + "]" + (hasExtra ? extra : ""), true);
+                PrintUtils.print(module, "\t[" + toShow + "] - [" + encrypted + "]" + (hasExtra ? extra : ""), true);
             } catch (Exception e) {
-                PrintUtils.print("error on " + result);
+                PrintUtils.print(module, "error on " + result, true);
                 e.printStackTrace();
             }
 

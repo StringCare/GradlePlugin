@@ -7,7 +7,7 @@ class StringCare implements Plugin<Project> {
 
     private static final float VERSION = 0.3;
     private Project project;
-    private static String key = null;
+    private String key;
     private static boolean debug;
     private static Map<String, Config> moduleMap = new HashMap<>();
 
@@ -67,48 +67,52 @@ class StringCare implements Plugin<Project> {
 
             @Override
             void onMergeResourcesStarts(String module, String variant) {
-                String key = CredentialUtils.getKey(module, variant, debug);
+                key = CredentialUtils.getKey(module, variant, debug);
+                if (!"none".equals(key)) {
+                    if (moduleMap.containsKey(module)) {
+                        PrintUtils.print(module, variant + ":" + key)
+                        PrintUtils.print(module, "backupStringResources")
+                        FileUtils.backupStringResources(module, moduleMap.get(module), debug)
+                        PrintUtils.print(module, "encryptStringResources")
 
-                if (moduleMap.containsKey(module)) {
-                    PrintUtils.print(module, variant + ":" + key)
-                    PrintUtils.print(module, "backupStringResources")
-                    FileUtils.backupStringResources(module, moduleMap.get(module))
-                    PrintUtils.print(module, "encryptStringResources")
+                        FileUtils.encryptStringResources(module, moduleMap.get(module), key, debug)
+                    } else {
+                        Config config = new Config();
+                        List<String> stg = new ArrayList<>();
+                        stg.add("strings.xml")
+                        List<String> src = new ArrayList<>();
+                        src.add("src/main")
+                        config.setStringFiles(stg)
+                        config.setSrcFolders(src)
 
-                    FileUtils.encryptStringResources(module, moduleMap.get(module), key)
-                } else {
-                    Config config = new Config();
-                    List<String> stg = new ArrayList<>();
-                    stg.add("strings.xml")
-                    List<String> src = new ArrayList<>();
-                    src.add("src/main")
-                    config.setStringFiles(stg)
-                    config.setSrcFolders(src)
-
-                    PrintUtils.print(module, variant + ":" + key)
-                    PrintUtils.print(module, "backupStringResources")
-                    FileUtils.backupStringResources(module, config)
-                    PrintUtils.print(module, "encryptStringResources")
-                    FileUtils.encryptStringResources(module, config, key)
+                        PrintUtils.print(module, variant + ":" + key)
+                        PrintUtils.print(module, "backupStringResources")
+                        FileUtils.backupStringResources(module, config, debug)
+                        PrintUtils.print(module, "encryptStringResources")
+                        FileUtils.encryptStringResources(module, config, key, debug)
+                    }
                 }
+
             }
 
             @Override
             void onMergeResourcesFinish(String module, String variant) {
-                if (moduleMap.containsKey(module)) {
-                    PrintUtils.print(module, "restoreStringResources")
-                    FileUtils.restoreStringResources(module, moduleMap.get(module))
-                } else {
-                    Config config = new Config();
-                    List<String> stg = new ArrayList<>();
-                    stg.add("strings.xml")
-                    List<String> src = new ArrayList<>();
-                    src.add("src/main")
-                    config.setStringFiles(stg)
-                    config.setSrcFolders(src)
+                if (!"none".equals(key)) {
+                    if (moduleMap.containsKey(module)) {
+                        PrintUtils.print(module, "restoreStringResources")
+                        FileUtils.restoreStringResources(module, moduleMap.get(module), debug)
+                    } else {
+                        Config config = new Config();
+                        List<String> stg = new ArrayList<>();
+                        stg.add("strings.xml")
+                        List<String> src = new ArrayList<>();
+                        src.add("src/main")
+                        config.setStringFiles(stg)
+                        config.setSrcFolders(src)
 
-                    PrintUtils.print(module, "restoreStringResources")
-                    FileUtils.restoreStringResources(module, config)
+                        PrintUtils.print(module, "restoreStringResources")
+                        FileUtils.restoreStringResources(module, config, debug)
+                    }
                 }
             }
         }))
