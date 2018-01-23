@@ -72,10 +72,10 @@ class StringCare implements Plugin<Project> {
                 if (moduleMap.containsKey(module)) {
                     PrintUtils.print(module, variant + ":" + key)
                     PrintUtils.print(module, "backupStringResources")
-                    FileUtils.backupStringResources(module, moduleMap.get(module))
+                    FileUtils.backupStringResources(module, moduleMap.get(module), debug)
                     PrintUtils.print(module, "encryptStringResources")
 
-                    FileUtils.encryptStringResources(module, moduleMap.get(module), key)
+                    FileUtils.encryptStringResources(module, moduleMap.get(module), key, debug)
                 } else {
                     Config config = new Config();
                     List<String> stg = new ArrayList<>();
@@ -87,9 +87,9 @@ class StringCare implements Plugin<Project> {
 
                     PrintUtils.print(module, variant + ":" + key)
                     PrintUtils.print(module, "backupStringResources")
-                    FileUtils.backupStringResources(module, config)
+                    FileUtils.backupStringResources(module, config, debug)
                     PrintUtils.print(module, "encryptStringResources")
-                    FileUtils.encryptStringResources(module, config, key)
+                    FileUtils.encryptStringResources(module, config, key, debug)
                 }
             }
 
