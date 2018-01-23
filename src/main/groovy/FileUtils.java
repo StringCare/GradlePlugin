@@ -59,9 +59,9 @@ public class FileUtils {
 
     // detect multiple sourceSet res.srcDirs
     public static void backupStringResources(String module, Config config, boolean debug) {
-        String currentPath = getCurrentPath(module);
+        String path = getCurrentPath(module);
         for (String folder : config.getSrcFolders()) {
-            currentPath += module + File.separator + folder + File.separator + "res" + File.separator;
+            String currentPath = path + module + File.separator + folder + File.separator + "res" + File.separator;
             File file = new File(currentPath);
             String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
             if (directories != null) {
@@ -77,7 +77,7 @@ public class FileUtils {
                                 toCheck.delete();
                             }
                             if (toCopy.exists()) {
-                                PrintUtils.print("- " + toCopy.getParentFile().getName() + File.separator + toCopy.getName(), true);
+                                PrintUtils.print(module, "- " + toCopy.getParentFile().getName() + File.separator + toCopy.getName(), true);
                                 copyFile(toCopy, toCheck);
                                 if (debug) {
                                     PrintUtils.print(module, "backuping file: " + toCopy.getPath(), true);
@@ -99,9 +99,9 @@ public class FileUtils {
     }
 
     public static void encryptStringResources(String module, Config config, String key, boolean debug) {
-        String currentPath = getCurrentPath(module);
+        String path = getCurrentPath(module);
         for (String folder : config.getSrcFolders()) {
-            currentPath += module + File.separator + folder + File.separator + "res" + File.separator;
+            String currentPath = path + module + File.separator + folder + File.separator + "res" + File.separator;
             File file = new File(currentPath);
             String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
             if (directories != null) {
@@ -110,7 +110,7 @@ public class FileUtils {
                     for (String sFile : config.getStringFiles()) {
                         File toEncrypt = new File(pathToEncrypt + sFile);
                         if (toEncrypt.exists()) {
-                            PrintUtils.print("- " + toEncrypt.getParentFile().getName() + File.separator + toEncrypt.getName(), true);
+                            PrintUtils.print(module, "- " + toEncrypt.getParentFile().getName() + File.separator + toEncrypt.getName(), true);
                             String encrypted = find(module, getTextFromFilePath(toEncrypt.getAbsolutePath()), key, debug);
                             writeFile(toEncrypt, encrypted);
                             if (debug) {
@@ -147,7 +147,7 @@ public class FileUtils {
                         File toCheck = new File(pathRes + sFile);
                         if (toRestore.exists()) {
                             try {
-                                PrintUtils.print("- " + toCheck.getParentFile().getName() + File.separator + toCheck.getName(), true);
+                                PrintUtils.print(module,"- " + toCheck.getParentFile().getName() + File.separator + toCheck.getName(), true);
                                 copyFile(toRestore, toCheck);
                                 if (debug) {
                                     PrintUtils.print(module, "restoring: " + toRestore.getPath(), true);

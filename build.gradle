@@ -24,7 +24,7 @@ apply plugin: 'java'
 apply plugin: 'com.jfrog.bintray'
 
 group 'com.stringcare'
-version '0.3.1'
+version '0.4'
 
 sourceCompatibility = 1.8
 

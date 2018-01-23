@@ -66,6 +66,18 @@ public class CredentialUtils {
             if (debug) {
                 PrintUtils.print(module, line, debug);
             }
+        } else if (line.toLowerCase().contains("config:") && moduleLocated && variantLocated) {
+            boolean valid = !line.split(": ")[1].trim().equalsIgnoreCase("none");
+            if (!valid) {
+                key = line.split(": ")[1].trim();
+                PrintUtils.print(module, "\uD83E\uDD2F no config defined for variant " + variant, true);
+                if (debug) {
+                    until = key;
+                }
+            } else if (debug){
+                PrintUtils.print(module, "Variant:" + variant, true);
+            }
+
         } else if (line.toLowerCase().contains("sha") && moduleLocated && variantLocated) {
             key = line.split(" ")[1];
             if (debug) {
@@ -86,9 +98,6 @@ public class CredentialUtils {
             String locV = line.split(" ")[1];
             if (locV.equals(variant)) {
                 variantLocated = true;
-                if (debug) {
-                    PrintUtils.print(module, line, debug);
-                }
             }
         } else if (line.toLowerCase().contains(":" + module)) {
             moduleLocated = true;
