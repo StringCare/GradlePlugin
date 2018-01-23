@@ -1,8 +1,8 @@
 <p align="center"><img width="10%" vspace="20" src="https://raw.githubusercontent.com/StringCare/AndroidLibrary/develop/sample/src/main/res/mipmap-xxxhdpi/ic_launcher.png"></p>
 
 
-
 # String Care Android Plugin
+Source code of plugin used in Android Studio at compilation time for strings encryption.
 
 Gradle implementation
 ------------
