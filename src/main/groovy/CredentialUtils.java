@@ -75,7 +75,8 @@ public class CredentialUtils {
                     until = key;
                 }
             } else if (debug){
-                PrintUtils.print(module, "Variant:" + variant, true);
+                PrintUtils.print(module, "Module: " + module, true);
+                PrintUtils.print(module, "Variant: " + variant, true);
             }
 
         } else if (line.toLowerCase().contains("sha") && moduleLocated && variantLocated) {
