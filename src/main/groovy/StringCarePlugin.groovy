@@ -59,7 +59,13 @@ class StringCare implements Plugin<Project> {
                 }
             }
         }
-        this.project.gradle.addBuildListener(new TimingRecorder(this, new GradleHandlerCallback() {
+        this.project.gradle.addBuildListener(new TListener(this, new GradleHandlerCallback() {
+
+            @Override
+            boolean debug() {
+                return debug
+            }
+
             @Override
             void onDataFound(String module, String variant) {
                 // nothing to do here

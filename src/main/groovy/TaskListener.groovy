@@ -20,7 +20,7 @@ class Timing {
     }
 }
 
-class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements TaskExecutionListener {
+class TListener extends BuildAndTaskExecutionListenerAdapter implements TaskExecutionListener {
     private ClockT clock
     private List<Timing> timings = []
     private StringCare plugin
@@ -32,7 +32,7 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
     private static final String MERGE = "merge";
     private static final String RESOURCES = "Resources";
 
-    TimingRecorder(StringCare plugin, GradleHandlerCallback callback) {
+    TListener(StringCare plugin, GradleHandlerCallback callback) {
         this.plugin = plugin
         this.callback = callback
     }
@@ -41,16 +41,31 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
     void beforeExecute(Task task) {
         clock = new ClockT()
         if (task.name.contains(PRE) && task.name.contains(BUILD) && !task.name.equals(PRE + BUILD) && !task.name.contains(TEST)) {
-            callback.onDataFound(task.project.name, PrintUtils.uncapitalize(task.name.substring(PRE.length()).substring(0, task.name.substring(PRE.length()).length() - BUILD.length())));
+            String module = getName(task)
+            if (module != null) {
+                callback.onDataFound(module, PrintUtils.uncapitalize(task.name.substring(PRE.length()).substring(0, task.name.substring(PRE.length()).length() - BUILD.length())));
+            }
         } else if (task.name.contains(MERGE) && task.name.contains(RESOURCES) && !task.name.contains(TEST)) {
-            callback.onMergeResourcesStarts(task.project.name, PrintUtils.uncapitalize(task.name.substring(MERGE.length()).substring(0, task.name.substring(MERGE.length()).length() - RESOURCES.length())));
+            String module = getName(task)
+            if (module != null) {
+                if (callback.debug()) {
+                    // PrintUtils.print(module, "Module: " + module, true)
+                }
+                callback.onMergeResourcesStarts(module, PrintUtils.uncapitalize(task.name.substring(MERGE.length()).substring(0, task.name.substring(MERGE.length()).length() - RESOURCES.length())));
+
+            } else {
+                PrintUtils.print("not_needed", "🤖 module path not found, report an issue", true)
+            }
         }
     }
 
     @Override
     void afterExecute(Task task, TaskState taskState) {
         if (task.name.contains(MERGE) && task.name.contains(RESOURCES) && !task.name.contains(TEST)) {
-            callback.onMergeResourcesFinish(task.project.name, PrintUtils.uncapitalize(task.name.substring(MERGE.length()).substring(0, task.name.substring(MERGE.length()).length() - RESOURCES.length())));
+            String module = getName(task)
+            if (module != null) {
+                callback.onMergeResourcesFinish(module, PrintUtils.uncapitalize(task.name.substring(MERGE.length()).substring(0, task.name.substring(MERGE.length()).length() - RESOURCES.length())));
+            }
         }
         timings << new Timing(
                 clock.getTimeInMs(),
@@ -73,4 +88,10 @@ class TimingRecorder extends BuildAndTaskExecutionListenerAdapter implements Tas
     Timing getTiming(String path) {
         timings.find { it.path == path }
     }
+
+    String getName(Task task) {
+        String path = task.project.getPath()
+        return path == null || path.length() == 0 ? null : path.split(":")[path.split(":").length - 1]
+    }
+
 }

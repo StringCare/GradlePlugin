@@ -20,6 +20,7 @@ public class PrintUtils {
     public static void print(String message) {
         print(message, false);
     }
+
     public static void print(String message, boolean tab) {
         if (variant != null && module != null) {
             if (!tab) {
