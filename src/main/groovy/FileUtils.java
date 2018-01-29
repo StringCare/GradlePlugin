@@ -37,8 +37,8 @@ public class FileUtils {
     }
 
     private static String getCurrentPath(String module) {
-        String path = new File(".").getAbsolutePath().replace(".", "").replace(module + File.separator,"");
-        return path;
+        File mod = new File(module);
+        return mod.exists() && mod.isDirectory() ? mod.getAbsolutePath() + File.separator : null;
     }
 
     public static String getString(BufferedReader br) {
@@ -60,15 +60,19 @@ public class FileUtils {
     // detect multiple sourceSet res.srcDirs
     public static void backupStringResources(String module, Config config, boolean debug) {
         String path = getCurrentPath(module);
+        if (path == null) {
+            PrintUtils.print(module, "module " + module + " not found", true);
+            return;
+        }
         for (String folder : config.getSrcFolders()) {
-            String currentPath = path + module + File.separator + folder + File.separator + "res" + File.separator;
+            String currentPath = path + folder + File.separator + "res" + File.separator;
+
             File file = new File(currentPath);
             String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
             if (directories != null) {
                 for (String dir : directories) {
                     String pathToCopy = currentPath + dir + File.separator;
-                    String pathToCheck = getCurrentPath(module) + module + File.separator + "resbackup" + File.separator + dir + File.separator;
-
+                    String pathToCheck = getCurrentPath(module) + "resbackup" + File.separator + dir + File.separator;
                     for (String sFile : config.getStringFiles()) {
                         try {
                             File toCopy = new File(pathToCopy + sFile);
@@ -94,14 +98,19 @@ public class FileUtils {
                     PrintUtils.print(module, "source folder not found: " + currentPath, true);
                 } else {
                     PrintUtils.print(module, "source folder not found: " + folder, true);
-                }            }
+                }
+            }
         }
     }
 
     public static void encryptStringResources(String module, Config config, String key, boolean debug) {
         String path = getCurrentPath(module);
+        if (path == null) {
+            PrintUtils.print(module, "module " + module + " not found", true);
+            return;
+        }
         for (String folder : config.getSrcFolders()) {
-            String currentPath = path + module + File.separator + folder + File.separator + "res" + File.separator;
+            String currentPath = path + folder + File.separator + "res" + File.separator;
             File file = new File(currentPath);
             String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
             if (directories != null) {
@@ -132,7 +141,11 @@ public class FileUtils {
     }
 
     public static void restoreStringResources(String module, Config config, boolean debug) {
-        String currentPath = getCurrentPath(module) + module + File.separator + "resbackup" + File.separator;
+        if (getCurrentPath(module) == null) {
+            PrintUtils.print(module, "module " + module + " not found", true);
+            return;
+        }
+        String currentPath = getCurrentPath(module) + "resbackup" + File.separator;
         File file = new File(currentPath);
         String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
         if (directories != null) {
@@ -140,7 +153,7 @@ public class FileUtils {
             for (String dir : directories) {
                 String pathToRestore = currentPath + dir + File.separator;
                 for (String folder : config.getSrcFolders()) {
-                    String pathRes = getCurrentPath(module) + module + File.separator + folder + File.separator + "res" + File.separator + dir + File.separator;
+                    String pathRes = getCurrentPath(module) + folder + File.separator + "res" + File.separator + dir + File.separator;
 
                     for (String sFile : config.getStringFiles()) {
                         toRestore = new File(pathToRestore + sFile);
