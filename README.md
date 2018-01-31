@@ -14,7 +14,7 @@ root_project/build.gradle
 buildscript {
 
     ext {
-        stringcare_version = '0.5'
+        stringcare_version = '0.6'
     }
 
     repositories {
