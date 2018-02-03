@@ -74,7 +74,7 @@ class StringCare implements Plugin<Project> {
             @Override
             void onMergeResourcesStarts(String module, String variant) {
                 key = CredentialUtils.getKey(module, variant, debug);
-                if (!"none".equals(key)) {
+                if (!"none".equals(key) && key != null) {
                     if (moduleMap.containsKey(module)) {
                         PrintUtils.print(module, variant + ":" + key)
                         PrintUtils.print(module, "backupStringResources")
@@ -103,7 +103,7 @@ class StringCare implements Plugin<Project> {
 
             @Override
             void onMergeResourcesFinish(String module, String variant) {
-                if (!"none".equals(key)) {
+                if (!"none".equals(key)&& key != null) {
                     if (moduleMap.containsKey(module)) {
                         PrintUtils.print(module, "restoreStringResources")
                         FileUtils.restoreStringResources(module, moduleMap.get(module), debug)
