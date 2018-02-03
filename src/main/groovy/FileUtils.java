@@ -230,9 +230,8 @@ public class FileUtils {
                 } else {
                     encrypted = AES.encrypt(result, key);
                     toShow = result;
-                    content = content.replaceAll(">" + result + "<", ">" + encrypted + "<");
+                    content = content.replace(">" + result + "<", ">" + encrypted + "<");
                 }
-
 
                 toShow = toShow.length() > maxToShow ? toShow.substring(0, maxToShow) + ".." : toShow;
                 encrypted = encrypted.length() > maxToShow ? encrypted.substring(0, maxToShow) + ".." : encrypted;
@@ -242,10 +241,13 @@ public class FileUtils {
                 e.printStackTrace();
             }
 
-
             xml1 = toAnalyze.substring(toAnalyze.indexOf(result + "</string>"), (int)(toAnalyze.length()));
 
             if (xml1.indexOf(toFind1)  <= 0) break;
+        }
+
+        if (debug) {
+            PrintUtils.print(module, content, true);
         }
 
         return content;
