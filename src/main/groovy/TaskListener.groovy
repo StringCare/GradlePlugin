@@ -28,6 +28,8 @@ class TListener extends BuildAndTaskExecutionListenerAdapter implements TaskExec
 
     private static final String TEST = "Test";
     private static final String PRE = "pre";
+    private static final String PACK = "package";
+    private static final String RES_VALUES = "ResValues";
     private static final String BUILD = "Build";
     private static final String MERGE = "merge";
     private static final String RESOURCES = "Resources";
@@ -45,6 +47,16 @@ class TListener extends BuildAndTaskExecutionListenerAdapter implements TaskExec
             if (module != null) {
                 callback.onDataFound(module, PrintUtils.uncapitalize(task.name.substring(PRE.length()).substring(0, task.name.substring(PRE.length()).length() - BUILD.length())));
             }
+        } else if (task.name.contains(PACK) && task.name.contains(RESOURCES) && !task.name.contains(TEST)) {
+            String module = getName(task)
+            if (module != null) {
+                if (callback.debug()) {
+                    // PrintUtils.print(module, "Module: " + module, true)
+                }
+                callback.onMergeResourcesStarts(module, PrintUtils.uncapitalize(task.name.substring(PACK.length()).substring(0, task.name.substring(PACK.length()).length() - RESOURCES.length())));
+            } else {
+                PrintUtils.print("not_needed", "🤖 module path not found, report an issue", true)
+            }
         } else if (task.name.contains(MERGE) && task.name.contains(RESOURCES) && !task.name.contains(TEST)) {
             String module = getName(task)
             if (module != null) {
@@ -52,7 +64,6 @@ class TListener extends BuildAndTaskExecutionListenerAdapter implements TaskExec
                     // PrintUtils.print(module, "Module: " + module, true)
                 }
                 callback.onMergeResourcesStarts(module, PrintUtils.uncapitalize(task.name.substring(MERGE.length()).substring(0, task.name.substring(MERGE.length()).length() - RESOURCES.length())));
-
             } else {
                 PrintUtils.print("not_needed", "🤖 module path not found, report an issue", true)
             }
@@ -65,6 +76,11 @@ class TListener extends BuildAndTaskExecutionListenerAdapter implements TaskExec
             String module = getName(task)
             if (module != null) {
                 callback.onMergeResourcesFinish(module, PrintUtils.uncapitalize(task.name.substring(MERGE.length()).substring(0, task.name.substring(MERGE.length()).length() - RESOURCES.length())));
+            }
+        } else if (task.name.contains(PACK) && task.name.contains(RESOURCES) && !task.name.contains(TEST)) {
+            String module = getName(task)
+            if (module != null) {
+                callback.onMergeResourcesFinish(module, PrintUtils.uncapitalize(task.name.substring(PACK.length()).substring(0, task.name.substring(PACK.length()).length() - RESOURCES.length())));
             }
         }
         timings << new Timing(
