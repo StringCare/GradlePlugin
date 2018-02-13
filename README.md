@@ -4,6 +4,13 @@
 # String Care Android Plugin
 Source code of plugin used in Android Studio at compilation time for strings encryption.
 
+Setup CMake
+-----------
+```bash
+brew update
+brew install cmake
+```
+
 Gradle implementation
 ------------
 

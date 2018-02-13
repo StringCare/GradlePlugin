@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/malacaton-lib.dir/src/main/cpp/malacaton-lib.cpp.o"
-  "jniLib/libmalacaton-lib.pdb"
-  "jniLib/libmalacaton-lib.dylib"
+  "build/classes/groovy/main/libmalacaton-lib.pdb"
+  "build/classes/groovy/main/libmalacaton-lib.dylib"
 )
 
 # Per-language clean rules from dependency scanning.

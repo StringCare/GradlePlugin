@@ -6,17 +6,17 @@
 
 #IncludeRegexTransform: 
 
-/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/include/darwin/jni_md.h
-
-/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/include/jni.h
+/System/Library/Frameworks/JavaVM.framework/Headers/jni.h
 stdio.h
 -
 stdarg.h
 -
 jni_md.h
-/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/include/jni_md.h
+/System/Library/Frameworks/JavaVM.framework/Headers/jni_md.h
 
-/Users/efraespada/Documents/Github/StringCare/AndroidPlugin/src/main/cpp/malacaton-lib.cpp
+/System/Library/Frameworks/JavaVM.framework/Headers/jni_md.h
+
+/Users/efrainespada/Documents/Github/StringCare/AndroidPlugin/src/main/cpp/malacaton-lib.cpp
 jni.h
 -
 string
