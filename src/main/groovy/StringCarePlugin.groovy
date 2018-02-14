@@ -17,9 +17,7 @@ class StringCare implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        System.loadLibrary("malacaton-lib")
-
-        this.project = project
+        this.project = project;
         createExtensions()
 
         this.project.task('stop') {

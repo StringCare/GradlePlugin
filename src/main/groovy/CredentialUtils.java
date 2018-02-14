@@ -17,8 +17,39 @@ public class CredentialUtils {
     }
 
     public static String getKey(String module, String variant, boolean debug) {
+        try {
+            key = null;
+            until = null;
+            moduleLocated = false;
+            variantLocated = false;
+            String cmd = "";
+            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                cmd = "gradlew.bat";
+            } else {
+                cmd = "gradlew";
+                Runtime.getRuntime().exec("chmod +x ./" + cmd);
+            }
 
-        return "lalal";
+            String command = "./" + cmd + " signingReport";
+
+            InputStream is = Runtime.getRuntime().exec(command).getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader buff = new BufferedReader (isr);
+
+            String line;
+            while ((line = buff.readLine()) != null) {
+                parseTrace(module, variant, line, debug);
+                if (key != null && !debug) {
+                    break;
+                } else if (key != null && until != null && debug) {
+                    break;
+                }
+            }
+
+        } catch (IOException e) {
+            if (debug) e.printStackTrace();
+        }
+        return key;
     }
 
     private static void parseTrace(String module, String variant, String line, boolean debug) {
@@ -73,7 +104,5 @@ public class CredentialUtils {
             moduleLocated = true;
         }
     }
-
-    private static native String getKey(Object object);
 
 }

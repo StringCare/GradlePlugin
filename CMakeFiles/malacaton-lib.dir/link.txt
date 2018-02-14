@@ -1,1 +1,0 @@
-/usr/bin/g++  -Wall -D_REENTRANT -std=c++11 -O3 -DNDEBUG -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk -dynamiclib -Wl,-headerpad_max_install_names  -o jniLib/libmalacaton-lib.dylib -install_name @rpath/libmalacaton-lib.dylib CMakeFiles/malacaton-lib.dir/src/main/cpp/malacaton-lib.cpp.o 
