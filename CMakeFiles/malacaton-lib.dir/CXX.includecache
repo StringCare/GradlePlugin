@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/System/Library/Frameworks/JavaVM.framework/Headers/jni.h
+stdio.h
+-
+stdarg.h
+-
+jni_md.h
+/System/Library/Frameworks/JavaVM.framework/Headers/jni_md.h
+
+/System/Library/Frameworks/JavaVM.framework/Headers/jni_md.h
+
+/Users/efrainespada/Documents/Github/StringCare/AndroidPlugin/src/main/cpp/malacaton-lib.cpp
+jni.h
+-
+string
+-
+

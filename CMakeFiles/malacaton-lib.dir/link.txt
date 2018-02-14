@@ -1,0 +1,1 @@
+/usr/bin/g++  -Wall -D_REENTRANT -std=c++11 -O3 -DNDEBUG -dynamiclib -Wl,-headerpad_max_install_names  -o build/classes/groovy/main/libmalacaton-lib.dylib -install_name @rpath/libmalacaton-lib.dylib CMakeFiles/malacaton-lib.dir/src/main/cpp/malacaton-lib.cpp.o 
