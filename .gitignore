@@ -5,6 +5,3 @@ build/
 local.properties
 *.iml
 classes/
-CMakeFiles/
-MakeFile
-*.cmake
