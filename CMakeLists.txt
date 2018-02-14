@@ -36,5 +36,5 @@ target_include_directories(malacaton-lib PRIVATE
 
 set_target_properties(malacaton-lib
     PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/build/classes/groovy/main"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/jniLib"
 )

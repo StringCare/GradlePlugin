@@ -1,4 +1,4 @@
-import org.apache.commons.io.IOUtils
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
@@ -9,8 +9,7 @@ class StringCare implements Plugin<Project> {
     private Project project;
     private String key;
     private static boolean debug;
-    private static Map<String, Config> moduleMap = new HashMap<>()
-
+    private static Map<String, Config> moduleMap = new HashMap<>();
 
     def extension = null
 
@@ -18,6 +17,8 @@ class StringCare implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
+        System.loadLibrary("malacaton-lib")
+
         this.project = project
         createExtensions()
 

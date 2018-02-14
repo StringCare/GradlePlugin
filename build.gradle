@@ -38,7 +38,6 @@ dependencies {
     // Use the latest Groovy version for building this library
     compile 'org.codehaus.groovy:groovy-all:2.4.12'
     compile gradleApi()
-    compile "org.apache.commons:commons-io:1.3.2"
 
     // Use the awesome Spock testing and specification framework
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
@@ -52,7 +51,11 @@ task generateJniHeaders(type: Exec, dependsOn: 'classes') {
             'CredentialUtils'
     ]
     def javah = Jvm.current().getExecutable('javah')
-    commandLine(javah, "-d", nativeIncludes, "-force", "-classpath", "$classpath:$appclasspath", *jniClasses)
+    commandLine(javah, "-d", nativeIncludes, "-classpath", "$classpath:$appclasspath", *jniClasses)
+}
+
+tasks.withType(Test) {
+    systemProperty "java.library.path", "${systemProperties["java.library.path"]}:$projectDir/jniLib"
 }
 
 task initCmake(type: Exec) {
