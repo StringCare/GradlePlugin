@@ -24,7 +24,7 @@ apply plugin: 'java'
 apply plugin: 'com.jfrog.bintray'
 
 group 'com.stringcare'
-version '0.7'
+version '0.9'
 
 sourceCompatibility = 1.8
 
@@ -34,18 +34,14 @@ repositories {
 }
 
 dependencies {
-    // Use the latest Groovy version for building this library
     compile 'org.codehaus.groovy:groovy-all:2.4.12'
     compile gradleApi()
-
-    // Use the awesome Spock testing and specification framework
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }
 
 
 install {
     repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
         pom {
             project {
                 packaging 'aar'
