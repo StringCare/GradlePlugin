@@ -1,69 +1,25 @@
-<p align="center"><img width="10%" vspace="20" src="https://raw.githubusercontent.com/StringCare/AndroidLibrary/develop/sample/src/main/res/mipmap-xxxhdpi/ic_launcher.png"></p>
+<p align="center"><img width="10%" vspace="20" src="https://github.com/StringCare/AndroidPlugin/raw/master/images/ic_launcher_round.png"></p>
 
+<h3 align="center" style="margin-bottom:30px" vspace="20">StringCare Gradle Plugin</h3>
 
-# String Care Android Plugin
-Source code of plugin used in Android Studio at compilation time for strings encryption.
+<p align="center"><img width="10%" vspace="20" src="https://github.com/StringCare/AndroidLibrary/raw/develop/white.png"></p>
 
-Gradle implementation
-------------
+#### [Wiki Plugin](https://github.com/StringCare/GradlePlugin/wiki)
 
-root_project/build.gradle
-```groovy
-// root_project/build.gradle
+#### [What is StringCare](https://github.com/StringCare/GradlePlugin/wiki/What-is-StringCare)
 
-buildscript {
+#### [Plugin Implementation](https://github.com/StringCare/GradlePlugin/wiki/Plugin-Implementation)
 
-    ext {
-        stringcare_version = '0.7'
-    }
+#### [Plugin Configuration](https://github.com/StringCare/GradlePlugin/wiki/Plugin-Configuration)
 
-    repositories {
-        jcenter()
-    }
+#### [Plugin Obfuscation](https://github.com/StringCare/GradlePlugin/wiki/Plugin-Obfuscation)
 
-    dependencies {
-        classpath "com.stringcare:plugin:$stringcare_version"
-    }
-
-}
- 
-apply plugin: StringCare
- 
-stringcare {
-
-    debug true   // prints details
-
-    modules {
-
-        sample {
-            stringFiles = ['strings.xml',"other_file.xml"]
-            srcFolders = ['src/main', "other_folder"]
-        }
-
-        // root_folder/sample/src/main/res/.../strings.xml
-        // root_folder/sample/src/main/res/.../other_file.xml
-        // root_folder/sample/other_folder/res/.../strings.xml
-        // root_folder/sample/other_folder/res/.../other_file.xml
-
-        other_module {
-            srcFolders = ['src/moduleB']
-        }
-
-        // root_folder/other_module/src/moduleB/res/.../strings.xml
-
-        other_module_ {} //
-
-        // root_folder/other_module_/src/main/res/.../strings.xml
-
-    }
-
-}
-```
+#### [Wiki Library](https://github.com/StringCare/AndroidLibrary/wiki)
 
 
 License
 -------
-    Copyright 2017 Efraín Espada
+    Copyright 2018 StringCare [🐒 SpaceMonkeys]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
