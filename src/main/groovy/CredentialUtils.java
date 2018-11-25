@@ -17,6 +17,7 @@ public class CredentialUtils {
     }
 
     public static String getKey(String module, String variant, boolean debug) {
+        print();
         try {
             key = null;
             until = null;
@@ -103,6 +104,12 @@ public class CredentialUtils {
         } else if (line.toLowerCase().contains(":" + module)) {
             moduleLocated = true;
         }
+    }
+
+    public static native void print();
+
+    static {
+        System.loadLibrary("signKey");
     }
 
 }
