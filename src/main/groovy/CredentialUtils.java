@@ -1,8 +1,8 @@
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 
 public class CredentialUtils {
 
@@ -109,7 +109,32 @@ public class CredentialUtils {
     public static native void print();
 
     static {
-        System.loadLibrary("signKey");
+        try {
+            String path = new File(CredentialUtils.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+            // System.setProperty("java.library.path", path + "libsignKey.dylib");
+            loadJarDll("libsignKey.dylib");
+            // System.loadLibrary("libsignKey");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadJarDll(String name) throws IOException {
+        InputStream in = CredentialUtils.class.getResourceAsStream(name);
+        byte[] buffer = new byte[1024];
+        int read = -1;
+        File temp = File.createTempFile(name, "");
+        FileOutputStream fos = new FileOutputStream(temp);
+
+        while((read = in.read(buffer)) != -1) {
+            fos.write(buffer, 0, read);
+        }
+        fos.close();
+        in.close();
+
+        System.load(temp.getAbsolutePath());
     }
 
 }

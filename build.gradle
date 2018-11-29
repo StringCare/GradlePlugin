@@ -15,8 +15,8 @@ plugins {
     id 'edu.wpi.first.GradleJni' version '0.3.1'
 }
 
-def siteUrl = 'https://github.com/StringCare/AndroidPlugin'
-def gitUrl = 'https://github.com/StringCare/AndroidPlugin.git'
+def siteUrl = 'https://github.com/StringCare/GradlePlugin'
+def gitUrl = 'https://github.com/StringCare/GradlePlugin.git'
 
 apply plugin: 'groovy'
 apply plugin: 'java'
@@ -48,10 +48,11 @@ dependencies {
 model {
     components {
         signKey(JniNativeLibrarySpec) { // Use JniNativeLibrarySpec to get a JNI library
-            enableCheckTask true // Set to true to enable a JNI check task. This will search all generated JNI headers, and check to ensure their symbols exist in the native library
-            javaCompileTasks << compileJava // set javaCompileTasks to any java compile tasks that contain your JNI classes. It is a list of tasks
-            jniCrossCompileOptions << JniCrossCompileOptions('athena')
-            // See below for more JniCrossCompileOptions
+            sources {
+                c {
+                    source.srcDirs = ['src/main/signKey/c']
+                }
+            }
         }
     }
 }
@@ -103,3 +104,7 @@ bintray {
     }
 }
 
+processResources {
+    from 'src/main/groovy/jni'
+    include '*.dylib'
+}
