@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.15'
+    compile 'org.codehaus.groovy:groovy-all:2.5.4'
     compile gradleApi()
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }
@@ -53,6 +53,12 @@ model {
                     source.srcDirs = ['src/main/signKey/c']
                 }
             }
+        }
+    }
+    toolChains {
+        gcc(Gcc) {
+            // Uncomment to use a GCC install that is not in the PATH
+            path "C:\\MinGW\\bin"
         }
     }
 }

@@ -1,8 +1,7 @@
 #include <jni.h>
 #include <stdio.h>
 
-JNIEXPORT void JNICALL Java_CredentialUtils_print(JNIEnv *env, jclass clazz)
-{
+JNIEXPORT jstring JNICALL Java_CredentialUtils_sign(JNIEnv *env, jclass clazz, jstring key) {
 printf("Hello World!\n");
-return;
+return key;
 }

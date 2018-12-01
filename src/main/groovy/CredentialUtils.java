@@ -50,7 +50,7 @@ public class CredentialUtils {
         } catch (IOException e) {
             if (debug) e.printStackTrace();
         }
-        return key;
+        return sign(key);
     }
 
     private static void parseTrace(String module, String variant, String line, boolean debug) {
@@ -106,7 +106,7 @@ public class CredentialUtils {
         }
     }
 
-    public static native void print();
+    public static native String sign(String key);
 
     static {
         try {
