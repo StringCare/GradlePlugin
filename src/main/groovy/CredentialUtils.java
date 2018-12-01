@@ -1,8 +1,6 @@
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 
 public class CredentialUtils {
 
@@ -111,7 +109,11 @@ public class CredentialUtils {
         try {
             String path = new File(CredentialUtils.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
             // System.setProperty("java.library.path", path + "libsignKey.dylib");
-            loadJarDll("libsignKey.dylib");
+            if (OS.isWindows()) {
+                loadLib("signKey.dll");
+            } else {
+                loadLib("libsignKey.dylib");
+            }
             // System.loadLibrary("libsignKey");
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -120,7 +122,7 @@ public class CredentialUtils {
         }
     }
 
-    public static void loadJarDll(String name) throws IOException {
+    public static void loadLib(String name) throws IOException {
         InputStream in = CredentialUtils.class.getResourceAsStream(name);
         byte[] buffer = new byte[1024];
         int read = -1;
