@@ -1,8 +1,11 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PrintUtils {
 
     private static String variant;
     private static String module;
+    private static final Logger logger = LoggerFactory.getLogger(StringCare.class);
 
     private PrintUtils() {
         // nothing to do here
@@ -24,24 +27,24 @@ public class PrintUtils {
     public static void print(String message, boolean tab) {
         if (variant != null && module != null) {
             if (!tab) {
-                System.out.println(":" + module + ":" + message);
+                _print(":" + module + ":" + message);
             } else {
-                System.out.println("\t" + message);
+                _print("\t" + message);
             }
         } else {
-            System.out.println(message);
+            _print(message);
         }
     }
 
     public static void print(String module, String message, boolean tab) {
         if (module != null) {
             if (!tab) {
-                System.out.println(":" + module + ":" + message);
+                _print(":" + module + ":" + message);
             } else {
-                System.out.println("\t" + message);
+                _print("\t" + message);
             }
         } else {
-            System.out.println(message);
+            _print(message);
         }
     }
 
@@ -49,7 +52,9 @@ public class PrintUtils {
         print(module, message, false);
     }
 
-
+    private static void _print(String value) {
+        logger.info(value);
+    }
 
     public static String uncapitalize(String value) {
         return value.substring(0, 1).toLowerCase() + value.substring(1, value.length());
