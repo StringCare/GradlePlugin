@@ -17,7 +17,6 @@ public class CredentialUtils {
     }
 
     public static String getKey(String module, String variant, boolean debug) {
-        print();
         try {
             key = null;
             until = null;

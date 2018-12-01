@@ -57,9 +57,9 @@ model {
     }
     toolChains {
         gcc(Gcc) {
-            // Uncomment to use a GCC install that is not in the PATH
-            path "C:\\MinGW\\bin"
+            path new File("C:\\MinGW\\bin").toURI()
         }
+        clang(Clang)
     }
 }
 
