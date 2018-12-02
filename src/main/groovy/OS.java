@@ -10,7 +10,7 @@ public class OS {
     }
 
     public static boolean isWindows() {
-        return getOsName().startsWith("Windows");
+        return getOsName().toLowerCase().indexOf("win") > -1;
     }
 
 }

@@ -1,6 +1,5 @@
 
 import java.io.*;
-import java.net.URISyntaxException;
 
 public class CredentialUtils {
 
@@ -103,26 +102,35 @@ public class CredentialUtils {
         }
     }
 
+    /**
+     * Resigns key
+     * @param key Given key
+     * @return String
+     */
     public static native String sign(String key);
 
     static {
         try {
-            String path = new File(CredentialUtils.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
-            // System.setProperty("java.library.path", path + "libsignKey.dylib");
             if (OS.isWindows()) {
-                loadLib("signKey.dll");
+                if (System.getProperty("os.arch").equalsIgnoreCase("x86")) {
+                    loadLib("x86_signKey.dll");
+                } else {
+                    loadLib("x64_signKey.dll");
+                }
             } else {
                 loadLib("libsignKey.dylib");
             }
-            // System.loadLibrary("libsignKey");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void loadLib(String name) throws IOException {
+    /**
+     * Loads library
+     * @param name Library name
+     * @throws IOException Exception
+     */
+    private static void loadLib(String name) throws IOException {
         InputStream in = CredentialUtils.class.getResourceAsStream(name);
         byte[] buffer = new byte[1024];
         int read = -1;

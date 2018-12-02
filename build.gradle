@@ -40,14 +40,24 @@ repositories {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.15'
+    compile 'org.codehaus.groovy:groovy-all:2.5.4'
     compile gradleApi()
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }
 
 model {
+    platforms {
+        x86 {
+            architecture "x86"
+        }
+        x64 {
+            architecture "x86_64"
+        }
+    }
     components {
         signKey(JniNativeLibrarySpec) { // Use JniNativeLibrarySpec to get a JNI library
+            targetPlatform "x86"
+            targetPlatform "x64"
             sources {
                 c {
                     source.srcDirs = ['src/main/signKey/c']
@@ -56,8 +66,8 @@ model {
         }
     }
     toolChains {
-        gcc(Gcc) {
-            path new File("C:\\MinGW\\bin").toURI()
+        visualCpp(VisualCpp) {
+            installDir 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools'
         }
         clang(Clang)
     }
@@ -112,5 +122,5 @@ bintray {
 
 processResources {
     from 'src/main/groovy/jni'
-    include '*.dylib'
+    include '*.dylib', '*.dll'
 }
