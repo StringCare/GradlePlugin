@@ -11,10 +11,6 @@ buildscript {
     }
 }
 
-plugins {
-    id 'edu.wpi.first.GradleJni' version '0.3.1'
-}
-
 def siteUrl = 'https://github.com/StringCare/GradlePlugin'
 def gitUrl = 'https://github.com/StringCare/GradlePlugin.git'
 
@@ -26,8 +22,6 @@ apply plugin: 'nexus'
 apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'c'
-
 
 group 'com.stringcare'
 version '0.9'
@@ -43,34 +37,6 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.5.4'
     compile gradleApi()
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
-}
-
-model {
-    platforms {
-        x86 {
-            architecture "x86"
-        }
-        x64 {
-            architecture "x86_64"
-        }
-    }
-    components {
-        signKey(JniNativeLibrarySpec) { // Use JniNativeLibrarySpec to get a JNI library
-            targetPlatform "x86"
-            targetPlatform "x64"
-            sources {
-                c {
-                    source.srcDirs = ['src/main/signKey/c']
-                }
-            }
-        }
-    }
-    toolChains {
-        visualCpp(VisualCpp) {
-            installDir new File('C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools').toURI()
-        }
-        clang(Clang)
-    }
 }
 
 install {

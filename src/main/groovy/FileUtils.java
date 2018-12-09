@@ -1,4 +1,6 @@
 
+import org.gradle.api.Project;
+
 import java.io.*;
 
 public class FileUtils {
@@ -223,6 +225,11 @@ public class FileUtils {
                 String extra = " value_already_encrypted";
                 boolean hasExtra = false;
 
+                encrypted = jniObfuscate(key, result);
+                toShow = result;
+                content = content.replace(">" + result + "<", ">" + encrypted + "<");
+
+                /*
                 if (isEncrypted(result, key)) {
                     encrypted = result;
                     toShow = AES.decrypt(result, key);
@@ -231,7 +238,7 @@ public class FileUtils {
                     encrypted = AES.encrypt(result, key);
                     toShow = result;
                     content = content.replace(">" + result + "<", ">" + encrypted + "<");
-                }
+                }*/
 
                 toShow = toShow.length() > maxToShow ? toShow.substring(0, maxToShow) + ".." : toShow;
                 encrypted = encrypted.length() > maxToShow ? encrypted.substring(0, maxToShow) + ".." : encrypted;
@@ -299,6 +306,46 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static native String jniObfuscate(String key, String value);
+
+    static {
+        try {
+            if (OS.isWindows()) {
+                if (System.getProperty("os.arch").equalsIgnoreCase("x86")) {
+                    loadLib("x86_signKey.dll");
+                } else {
+                    loadLib("x64_signKey.dll");
+                }
+            } else {
+                loadLib("libsignKey.dylib");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Loads library
+     * @param name Library name
+     * @throws IOException Exception
+     */
+    private static void loadLib(String name) throws IOException {
+        InputStream in = FileUtils.class.getResourceAsStream(name);
+        byte[] buffer = new byte[1024];
+        int read = -1;
+        File temp = File.createTempFile(name, "");
+        FileOutputStream fos = new FileOutputStream(temp);
+
+        while((read = in.read(buffer)) != -1) {
+            fos.write(buffer, 0, read);
+        }
+        fos.close();
+        in.close();
+
+        System.load(temp.getAbsolutePath());
     }
 
 

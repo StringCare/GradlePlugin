@@ -73,6 +73,7 @@ class StringCare implements Plugin<Project> {
 
             @Override
             void onMergeResourcesStarts(String module, String variant) {
+
                 key = CredentialUtils.getKey(module, variant, debug);
                 if (!"none".equals(key) && key != null) {
                     if (moduleMap.containsKey(module)) {
@@ -81,7 +82,11 @@ class StringCare implements Plugin<Project> {
                         FileUtils.backupStringResources(module, moduleMap.get(module), debug)
                         PrintUtils.print(module, "encryptStringResources")
 
-                        FileUtils.encryptStringResources(module, moduleMap.get(module), key, debug)
+                        try {
+                            FileUtils.encryptStringResources(module, moduleMap.get(module), key, debug)
+                        } catch (Exception e) {
+                            e.printStackTrace()
+                        }
                     } else {
                         Config config = new Config();
                         List<String> stg = new ArrayList<>();
@@ -95,7 +100,11 @@ class StringCare implements Plugin<Project> {
                         PrintUtils.print(module, "backupStringResources")
                         FileUtils.backupStringResources(module, config, debug)
                         PrintUtils.print(module, "encryptStringResources")
-                        FileUtils.encryptStringResources(module, config, key, debug)
+                        try {
+                            FileUtils.encryptStringResources(module, config, key, debug)
+                        } catch (Exception e) {
+                            e.printStackTrace()
+                        }
                     }
                 }
 
@@ -121,6 +130,8 @@ class StringCare implements Plugin<Project> {
                     }
                 }
             }
+
+
         }))
     }
 

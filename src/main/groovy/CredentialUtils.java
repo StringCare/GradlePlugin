@@ -46,7 +46,7 @@ public class CredentialUtils {
         } catch (IOException e) {
             if (debug) e.printStackTrace();
         }
-        return sign(key);
+        return key;
     }
 
     private static void parseTrace(String module, String variant, String line, boolean debug) {
@@ -100,50 +100,6 @@ public class CredentialUtils {
         } else if (line.toLowerCase().contains(":" + module)) {
             moduleLocated = true;
         }
-    }
-
-    /**
-     * Resigns key
-     * @param key Given key
-     * @return String
-     */
-    public static native String sign(String key);
-
-    static {
-        try {
-            if (OS.isWindows()) {
-                if (System.getProperty("os.arch").equalsIgnoreCase("x86")) {
-                    loadLib("x86_signKey.dll");
-                } else {
-                    loadLib("x64_signKey.dll");
-                }
-            } else {
-                loadLib("libsignKey.dylib");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Loads library
-     * @param name Library name
-     * @throws IOException Exception
-     */
-    private static void loadLib(String name) throws IOException {
-        InputStream in = CredentialUtils.class.getResourceAsStream(name);
-        byte[] buffer = new byte[1024];
-        int read = -1;
-        File temp = File.createTempFile(name, "");
-        FileOutputStream fos = new FileOutputStream(temp);
-
-        while((read = in.read(buffer)) != -1) {
-            fos.write(buffer, 0, read);
-        }
-        fos.close();
-        in.close();
-
-        System.load(temp.getAbsolutePath());
     }
 
 }
