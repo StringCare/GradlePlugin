@@ -39,8 +39,12 @@ public class FileUtils {
     }
 
     private static String getCurrentPath(String module) {
-        File mod = new File(module);
-        return mod.exists() && mod.isDirectory() ? mod.getAbsolutePath() + File.separator : null;
+        if (OS.isWindows()) {
+            return System.getProperty("user.dir") + File.separator + module + File.separator;
+        } else {
+            File mod = new File(module);
+            return mod.exists() && mod.isDirectory() ? mod.getAbsolutePath() + File.separator : null;
+        }
     }
 
     public static String getString(BufferedReader br) {
@@ -313,11 +317,7 @@ public class FileUtils {
     static {
         try {
             if (OS.isWindows()) {
-                if (System.getProperty("os.arch").equalsIgnoreCase("x86")) {
-                    loadLib("x86_signKey.dll");
-                } else {
-                    loadLib("x64_signKey.dll");
-                }
+                loadLib("libsignKey.dll");
             } else {
                 loadLib("libsignKey.dylib");
             }

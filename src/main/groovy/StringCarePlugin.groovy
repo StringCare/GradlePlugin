@@ -1,4 +1,3 @@
-
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
@@ -92,7 +91,7 @@ class StringCare implements Plugin<Project> {
                         List<String> stg = new ArrayList<>();
                         stg.add("strings.xml")
                         List<String> src = new ArrayList<>();
-                        src.add("src/main")
+                        src.add("src" + File.separator + "main")
                         config.setStringFiles(stg)
                         config.setSrcFolders(src)
 
@@ -112,7 +111,7 @@ class StringCare implements Plugin<Project> {
 
             @Override
             void onMergeResourcesFinish(String module, String variant) {
-                if (!"none".equals(key)&& key != null) {
+                if (!"none".equals(key) && key != null) {
                     if (moduleMap.containsKey(module)) {
                         PrintUtils.print(module, "restoreStringResources")
                         FileUtils.restoreStringResources(module, moduleMap.get(module), debug)
@@ -130,13 +129,11 @@ class StringCare implements Plugin<Project> {
                     }
                 }
             }
-
-
         }))
     }
 
     private void createExtensions() {
-        extension = project.extensions.create('stringcare', Extension )
+        extension = project.extensions.create('stringcare', Extension)
         project.stringcare.extensions.modules = project.container(Conf)
     }
 }
