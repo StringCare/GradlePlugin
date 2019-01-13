@@ -51,7 +51,7 @@ class StringCare implements Plugin<Project> {
                     moduleMap.put(mod.name, config)
                 } else if (mod.stringFiles != null) {
                     List<String> src = new ArrayList<>();
-                    src.add("src/main")
+                    src.add("src" + File.separator + "main")
                     config.setStringFiles(mod.stringFiles)
                     config.setSrcFolders(src)
                     moduleMap.put(mod.name, config)
@@ -120,7 +120,7 @@ class StringCare implements Plugin<Project> {
                         List<String> stg = new ArrayList<>();
                         stg.add("strings.xml")
                         List<String> src = new ArrayList<>();
-                        src.add("src/main")
+                        src.add("src" + File.separator + "main")
                         config.setStringFiles(stg)
                         config.setSrcFolders(src)
 
