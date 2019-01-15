@@ -5,3 +5,5 @@ build/
 local.properties
 *.iml
 classes/
+src/main/signKey/c/signKey.c
+*.DS_Store

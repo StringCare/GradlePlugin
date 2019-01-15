@@ -1,7 +1,4 @@
 
-def siteUrl = 'https://github.com/StringCare/AndroidPlugin'
-def gitUrl = 'https://github.com/StringCare/AndroidPlugin.git'
-
 buildscript {
     repositories {
         mavenCentral()
@@ -13,6 +10,9 @@ buildscript {
         classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.5.1'
     }
 }
+
+def siteUrl = 'https://github.com/StringCare/GradlePlugin'
+def gitUrl = 'https://github.com/StringCare/GradlePlugin.git'
 
 apply plugin: 'groovy'
 apply plugin: 'java'
@@ -34,11 +34,10 @@ repositories {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.12'
+    compile 'org.codehaus.groovy:groovy-all:2.5.4'
     compile gradleApi()
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }
-
 
 install {
     repositories.mavenInstaller {
@@ -87,3 +86,7 @@ bintray {
     }
 }
 
+processResources {
+    from 'src/main/groovy/jni'
+    include '*.dylib', '*.dll'
+}

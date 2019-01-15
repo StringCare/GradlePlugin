@@ -14,12 +14,14 @@
 
 #### [Plugin Obfuscation](https://github.com/StringCare/GradlePlugin/wiki/Plugin-Obfuscation)
 
+#### [Compatibility](https://github.com/StringCare/GradlePlugin/wiki/Compatibility)
+
 #### [Wiki Library](https://github.com/StringCare/AndroidLibrary/wiki)
 
 
 License
 -------
-    Copyright 2018 StringCare [🐒 SpaceMonkeys]
+    Copyright 2019 StringCare [🐒 SpaceMonkeys]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
