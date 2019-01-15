@@ -14,6 +14,8 @@
 
 #### [Plugin Obfuscation](https://github.com/StringCare/GradlePlugin/wiki/Plugin-Obfuscation)
 
+#### [Compatibility](https://github.com/StringCare/GradlePlugin/wiki/Compatibility)
+
 #### [Wiki Library](https://github.com/StringCare/AndroidLibrary/wiki)
 
 
