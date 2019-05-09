@@ -36,9 +36,7 @@ public class CredentialUtils {
             String line;
             while ((line = buff.readLine()) != null) {
                 parseTrace(module, variant, line, debug);
-                if (key != null && !debug) {
-                    break;
-                } else if (key != null && until != null && debug) {
+                if (key != null && (!debug || (debug && until != null))) {
                     break;
                 }
             }
@@ -76,7 +74,7 @@ public class CredentialUtils {
                 PrintUtils.print(module, "Variant: " + variant, true);
             }
 
-        } else if (line.toLowerCase().contains("sha") && moduleLocated && variantLocated) {
+        } else if (line.toLowerCase().contains("sha1") && moduleLocated && variantLocated) {
             key = line.split(" ")[1];
             if (debug) {
                 PrintUtils.print(module, line, debug);
