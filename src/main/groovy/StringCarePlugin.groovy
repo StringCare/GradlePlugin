@@ -4,11 +4,11 @@ import org.gradle.api.logging.Logger
 
 class StringCare implements Plugin<Project> {
 
-    private static final float VERSION = 0.3;
-    private Project project;
-    private String key;
-    private static boolean debug;
-    private static Map<String, Config> moduleMap = new HashMap<>();
+    private Project project
+    private String key
+    private static boolean debug
+    public static String WRAPPER = "gradlew"
+    private static Map<String, Config> moduleMap = new HashMap<>()
 
     def extension = null
 
@@ -16,21 +16,23 @@ class StringCare implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        this.project = project;
+        this.project = project
         createExtensions()
+
+        FileUtils.defineProjectPath(this.project.file(WRAPPER).absolutePath.replace(WRAPPER, ""))
 
         this.project.task('stop') {
             doLast {
-                String cmd = "";
+                String cmd
                 if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-                    cmd = "gradlew.bat";
+                    cmd = WRAPPER + ".bat"
                 } else {
-                    cmd = "gradlew";
-                    Runtime.getRuntime().exec("chmod +x ./" + cmd);
+                    cmd = WRAPPER
+                    Runtime.getRuntime().exec("chmod +x ./" + cmd)
                 }
 
-                Runtime.getRuntime().exec("./" + cmd + " --stop");
-                Runtime.getRuntime().exec("./" + cmd + " clean");
+                Runtime.getRuntime().exec("./" + cmd + " --stop")
+                Runtime.getRuntime().exec("./" + cmd + " clean")
             }
         }
 
