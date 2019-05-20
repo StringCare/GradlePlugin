@@ -21,9 +21,9 @@ public class CredentialUtils {
             variantLocated = false;
             String cmd = "";
             if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-                cmd = "gradlew.bat";
+                cmd = StringCare.WRAPPER + ".bat";
             } else {
-                cmd = "gradlew";
+                cmd = StringCare.WRAPPER;
                 Runtime.getRuntime().exec("chmod +x ./" + cmd);
             }
 
