@@ -20,19 +20,19 @@ class Timing {
     }
 }
 
-class TListener extends BuildAndTaskExecutionListenerAdapter implements TaskExecutionListener {
+class BuilderListener extends BuildAndTaskExecutionListenerAdapter implements TaskExecutionListener {
     private ClockT clock
     private List<Timing> timings = []
     private StringCare plugin
     private GradleHandlerCallback callback
 
-    private static final String TEST = "Test";
-    private static final String PRE = "pre";
-    private static final String BUILD = "Build";
-    private static final String MERGE = "merge";
-    private static final String RESOURCES = "Resources";
+    private static final String TEST = "Test"
+    private static final String PRE = "pre"
+    private static final String BUILD = "Build"
+    private static final String MERGE = "merge"
+    private static final String RESOURCES = "Resources"
 
-    TListener(StringCare plugin, GradleHandlerCallback callback) {
+    BuilderListener(StringCare plugin, GradleHandlerCallback callback) {
         this.plugin = plugin
         this.callback = callback
     }

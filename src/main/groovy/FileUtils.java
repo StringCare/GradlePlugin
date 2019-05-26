@@ -1,4 +1,6 @@
 
+import groovy.json.StringEscapeUtils;
+import java.nio.charset.Charset;
 import java.io.*;
 
 public class FileUtils {
@@ -101,7 +103,7 @@ public class FileUtils {
         }
     }
 
-    public static void encryptStringResources(String module, Config config, String key, boolean debug) {
+    public static void encryptStringResources(String mainModule, String module, Config config, String key, boolean debug) {
         String path = getCurrentPath(module);
         for (String folder : config.getSrcFolders()) {
             String currentPath = path + folder + File.separator + "res" + File.separator;
@@ -114,7 +116,7 @@ public class FileUtils {
                         File toEncrypt = new File(pathToEncrypt + sFile);
                         if (toEncrypt.exists()) {
                             PrintUtils.print(module, "- " + toEncrypt.getParentFile().getName() + File.separator + toEncrypt.getName(), true);
-                            String encrypted = find(module, getTextFromFilePath(toEncrypt.getAbsolutePath()), key, debug);
+                            String encrypted = parseXML(mainModule, module, getTextFromFilePath(toEncrypt.getAbsolutePath()), key, debug);
                             writeFile(toEncrypt, encrypted);
                             if (debug) {
                                 PrintUtils.print(module, "writing file: " + toEncrypt.getPath(), true);
@@ -180,31 +182,33 @@ public class FileUtils {
         }
     }
 
-
-    private static String find(String module, String xmlO, String key, boolean debug) {
-        String content = xmlO;
+    private static String parseXML(String mainModule, String module, String original, String key, boolean debug) {
+        String content = original;
         String toFind1 = "hidden=\"true\"";
 
         String xml1 = content;
         while (xml1.indexOf(toFind1) > 0) {
             String toAnalyze = xml1.substring(xml1.indexOf(toFind1), (int)(xml1.length()));
 
-            String result = extrac(toAnalyze);
+            String result = extract(toAnalyze);
 
             try {
-                String encrypted = "";
-                String toShow = "";
-
-                String extra = " value_already_encrypted";
-                boolean hasExtra = false;
-
-                encrypted = jniObfuscate(key, result);
-                toShow = result;
-                content = content.replace(">" + result + "<", ">" + encrypted + "<");
+                byte[] arr = jniObfuscate(mainModule, key, StringEscapeUtils.unescapeJava(result).getBytes(Charset.forName("UTF-8")));
+                StringBuilder r = new StringBuilder();
+                for (int i = 0; i < arr.length; i++) {
+                    if (arr.length - 1 == i) {
+                        r.append(arr[i]);
+                    } else {
+                        r.append(arr[i]).append(", ");
+                    }
+                }
+                String encrypted = r.toString();
+                String toShow = result;
+                content = content.replace("hidden=\"true\">" + result + "<", ">" + encrypted + "<");
 
                 toShow = toShow.length() > maxToShow ? toShow.substring(0, maxToShow) + ".." : toShow;
                 encrypted = encrypted.length() > maxToShow ? encrypted.substring(0, maxToShow) + ".." : encrypted;
-                PrintUtils.print(module, "\t[" + toShow + "] - [" + encrypted + "]" + (hasExtra ? extra : ""), true);
+                PrintUtils.print(module, "\t[" + toShow + "] - [" + encrypted + "]", true);
             } catch (Exception e) {
                 PrintUtils.print(module, "error on " + result, true);
                 e.printStackTrace();
@@ -238,7 +242,7 @@ public class FileUtils {
         }
     }
 
-    private static String extrac(String val) {
+    private static String extract(String val) {
         val = val.substring(val.indexOf('>') + 1, val.length());
         val = val.substring(0, val.indexOf("</string>"));
         return val;
@@ -268,7 +272,7 @@ public class FileUtils {
         }
     }
 
-    public static native String jniObfuscate(String key, String value);
+    public static native byte[] jniObfuscate(String mainModule, String key, byte[] value);
 
     static {
         try {
