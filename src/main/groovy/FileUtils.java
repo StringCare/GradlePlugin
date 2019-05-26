@@ -109,7 +109,7 @@ public class FileUtils {
         }
     }
 
-    public static void encryptStringResources(String module, Config config, String key, boolean debug) {
+    public static void encryptStringResources(String mainModule, String module, Config config, String key, boolean debug) {
         String path = getCurrentPath(module);
         if (path == null) {
             PrintUtils.print(module, "module " + module + " not found", true);
@@ -126,7 +126,7 @@ public class FileUtils {
                         File toEncrypt = new File(pathToEncrypt + sFile);
                         if (toEncrypt.exists()) {
                             PrintUtils.print(module, "- " + toEncrypt.getParentFile().getName() + File.separator + toEncrypt.getName(), true);
-                            String encrypted = find(module, getTextFromFilePath(toEncrypt.getAbsolutePath()), key, debug);
+                            String encrypted = parseXML(mainModule, module, getTextFromFilePath(toEncrypt.getAbsolutePath()), key, debug);
                             writeFile(toEncrypt, encrypted);
                             if (debug) {
                                 PrintUtils.print(module, "writing file: " + toEncrypt.getPath(), true);
@@ -212,7 +212,7 @@ public class FileUtils {
         return encrypted;
     }
 
-    private static String find(String module, String original, String key, boolean debug) {
+    private static String parseXML(String mainModule, String module, String original, String key, boolean debug) {
         String content = original;
         String toFind1 = "hidden=\"true\"";
 
@@ -228,7 +228,7 @@ public class FileUtils {
 
                 String extra = " value_already_encrypted";
                 boolean hasExtra = false;
-                byte[] arr = jniObfuscate(key, StringEscapeUtils.unescapeJava(result).getBytes(Charset.forName("UTF-8")));
+                byte[] arr = jniObfuscate(mainModule, key, StringEscapeUtils.unescapeJava(result).getBytes(Charset.forName("UTF-8")));
                 String r = "";
                 for (int i = 0; i < arr.length; i++) {
                     if (arr.length - 1 == i) {
@@ -321,7 +321,7 @@ public class FileUtils {
         }
     }
 
-    public static native byte[] jniObfuscate(String key, byte[] value);
+    public static native byte[] jniObfuscate(String mainModule, String key, byte[] value);
 
     static {
         try {
