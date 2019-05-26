@@ -194,18 +194,17 @@ public class FileUtils {
 
             try {
                 byte[] arr = jniObfuscate(mainModule, key, StringEscapeUtils.unescapeJava(result).getBytes(Charset.forName("UTF-8")));
-                String r = "";
+                StringBuilder r = new StringBuilder();
                 for (int i = 0; i < arr.length; i++) {
                     if (arr.length - 1 == i) {
-                        r += arr[i] + "";
+                        r.append(arr[i]);
                     } else {
-                        r += arr[i] + ", ";
+                        r.append(arr[i]).append(", ");
                     }
                 }
-                r += "";
-                String encrypted = r;
+                String encrypted = r.toString();
                 String toShow = result;
-                content = content.replace(">" + result + "<", ">" + encrypted + "<");
+                content = content.replace("hidden=\"true\">" + result + "<", ">" + encrypted + "<");
 
                 toShow = toShow.length() > maxToShow ? toShow.substring(0, maxToShow) + ".." : toShow;
                 encrypted = encrypted.length() > maxToShow ? encrypted.substring(0, maxToShow) + ".." : encrypted;
