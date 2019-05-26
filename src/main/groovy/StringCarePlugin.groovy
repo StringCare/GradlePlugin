@@ -8,6 +8,7 @@ class StringCare implements Plugin<Project> {
     private String key
     private static String main_module
     private static boolean debug
+    public static String WRAPPER = "gradlew"
     private static Map<String, Config> moduleMap = new HashMap<>()
 
     def extension = null
@@ -18,6 +19,8 @@ class StringCare implements Plugin<Project> {
     void apply(Project project) {
         this.project = project
         createExtensions()
+
+        FileUtils.defineProjectPath(this.project.file(WRAPPER).absolutePath.replace(WRAPPER, ""))
 
         this.logger = this.project.logger
         this.project.afterEvaluate { setupConfig() }

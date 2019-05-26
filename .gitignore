@@ -7,3 +7,5 @@ local.properties
 classes/
 src/main/signKey/c/signKey.c
 *.DS_Store
+*.ipr
+*.iws

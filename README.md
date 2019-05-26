@@ -1,24 +1,6 @@
 [![version][badge]][link]
 
-<p align="center"><img width="10%" vspace="20" src="https://github.com/StringCare/AndroidPlugin/raw/master/images/ic_launcher_round.png"></p>
-
-<h3 align="center" style="margin-bottom:30px" vspace="20">StringCare Gradle Plugin</h3>
-
-<p align="center"><img width="10%" vspace="20" src="https://github.com/StringCare/AndroidLibrary/raw/develop/white.png"></p>
-
-#### [Wiki Plugin](https://github.com/StringCare/GradlePlugin/wiki)
-
-#### [What is StringCare](https://github.com/StringCare/GradlePlugin/wiki/What-is-StringCare)
-
-#### [Plugin Implementation](https://github.com/StringCare/GradlePlugin/wiki/Plugin-Implementation)
-
-#### [Plugin Configuration](https://github.com/StringCare/GradlePlugin/wiki/Plugin-Configuration)
-
-#### [Plugin Obfuscation](https://github.com/StringCare/GradlePlugin/wiki/Plugin-Obfuscation)
-
-#### [Compatibility](https://github.com/StringCare/GradlePlugin/wiki/Compatibility)
-
-#### [Wiki Library](https://github.com/StringCare/AndroidLibrary/wiki)
+#### [Wiki](https://github.com/StringCare/AndroidLibrary/wiki)
 
 
 License

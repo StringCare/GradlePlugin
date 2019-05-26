@@ -6,21 +6,24 @@ import java.io.*;
 public class FileUtils {
 
     final static int maxToShow = 15;
+    private static String projectPath = "";
 
     private FileUtils() {
         // nothing to do here
+    }
+
+    public static void defineProjectPath(String path) {
+        projectPath = path;
     }
 
     private static String getTextFromFilePath(String path) {
         if (path == null) {
             return "";
         }
-        String xml = "";
-        String inputFilePath = path;
 
         String message = "";
 
-        File file = new File(inputFilePath);
+        File file = new File(path);
         try {
             FileInputStream stream = new FileInputStream(file);
             message = getString(new BufferedReader(new InputStreamReader(stream,"UTF-8")));
@@ -39,12 +42,7 @@ public class FileUtils {
     }
 
     private static String getCurrentPath(String module) {
-        if (OS.isWindows()) {
-            return System.getProperty("user.dir") + File.separator + module + File.separator;
-        } else {
-            File mod = new File(module);
-            return mod.exists() && mod.isDirectory() ? mod.getAbsolutePath() + File.separator : null;
-        }
+        return projectPath + File.separator + module + File.separator;
     }
 
     private static String getString(BufferedReader br) {
@@ -66,10 +64,6 @@ public class FileUtils {
     // detect multiple sourceSet res.srcDirs
     public static void backupStringResources(String module, Config config, boolean debug) {
         String path = getCurrentPath(module);
-        if (path == null) {
-            PrintUtils.print(module, "module " + module + " not found", true);
-            return;
-        }
         for (String folder : config.getSrcFolders()) {
             String currentPath = path + folder + File.separator + "res" + File.separator;
 
@@ -111,10 +105,6 @@ public class FileUtils {
 
     public static void encryptStringResources(String mainModule, String module, Config config, String key, boolean debug) {
         String path = getCurrentPath(module);
-        if (path == null) {
-            PrintUtils.print(module, "module " + module + " not found", true);
-            return;
-        }
         for (String folder : config.getSrcFolders()) {
             String currentPath = path + folder + File.separator + "res" + File.separator;
             File file = new File(currentPath);
@@ -147,10 +137,6 @@ public class FileUtils {
     }
 
     public static void restoreStringResources(String module, Config config, boolean debug) {
-        if (getCurrentPath(module) == null) {
-            PrintUtils.print(module, "module " + module + " not found", true);
-            return;
-        }
         String currentPath = getCurrentPath(module) + "resbackup" + File.separator;
         File file = new File(currentPath);
         String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
@@ -196,22 +182,6 @@ public class FileUtils {
         }
     }
 
-
-    public static boolean isEncrypted(String value, String key) {
-        boolean encrypted = true;
-
-        try {
-            if (AES.decrypt(value, key).equals(value))	// not encrypted value
-                encrypted = false;
-            else
-                encrypted = true;
-        } catch (Exception e) {
-            encrypted = false;
-        }
-
-        return encrypted;
-    }
-
     private static String parseXML(String mainModule, String module, String original, String key, boolean debug) {
         String content = original;
         String toFind1 = "hidden=\"true\"";
@@ -223,11 +193,6 @@ public class FileUtils {
             String result = extract(toAnalyze);
 
             try {
-                String encrypted = "";
-                String toShow = "";
-
-                String extra = " value_already_encrypted";
-                boolean hasExtra = false;
                 byte[] arr = jniObfuscate(mainModule, key, StringEscapeUtils.unescapeJava(result).getBytes(Charset.forName("UTF-8")));
                 String r = "";
                 for (int i = 0; i < arr.length; i++) {
@@ -238,24 +203,13 @@ public class FileUtils {
                     }
                 }
                 r += "";
-                encrypted = r;
-                toShow = result;
+                String encrypted = r;
+                String toShow = result;
                 content = content.replace(">" + result + "<", ">" + encrypted + "<");
-
-                /*
-                if (isEncrypted(result, key)) {
-                    encrypted = result;
-                    toShow = AES.decrypt(result, key);
-                    hasExtra = true;
-                } else {
-                    encrypted = AES.encrypt(result, key);
-                    toShow = result;
-                    content = content.replace(">" + result + "<", ">" + encrypted + "<");
-                }*/
 
                 toShow = toShow.length() > maxToShow ? toShow.substring(0, maxToShow) + ".." : toShow;
                 encrypted = encrypted.length() > maxToShow ? encrypted.substring(0, maxToShow) + ".." : encrypted;
-                PrintUtils.print(module, "\t[" + toShow + "] - [" + encrypted + "]" + (hasExtra ? extra : ""), true);
+                PrintUtils.print(module, "\t[" + toShow + "] - [" + encrypted + "]", true);
             } catch (Exception e) {
                 PrintUtils.print(module, "error on " + result, true);
                 e.printStackTrace();
@@ -279,7 +233,7 @@ public class FileUtils {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.getAbsolutePath()),"UTF-8"));
             writer.write(xml);
         } catch (Exception e) {
-            if (true) e.printStackTrace();
+            e.printStackTrace();
         } finally {
             try {
                 writer.close();
@@ -290,10 +244,8 @@ public class FileUtils {
     }
 
     private static String extract(String val) {
-
         val = val.substring(val.indexOf('>') + 1, val.length());
         val = val.substring(0, val.indexOf("</string>"));
-
         return val;
     }
 
