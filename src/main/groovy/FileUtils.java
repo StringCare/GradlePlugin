@@ -1,6 +1,6 @@
 
-import org.gradle.api.Project;
-
+import groovy.json.StringEscapeUtils;
+import java.nio.charset.Charset;
 import java.io.*;
 
 public class FileUtils {
@@ -11,7 +11,7 @@ public class FileUtils {
         // nothing to do here
     }
 
-    public static String getTextFromFilePath(String path) {
+    private static String getTextFromFilePath(String path) {
         if (path == null) {
             return "";
         }
@@ -47,7 +47,7 @@ public class FileUtils {
         }
     }
 
-    public static String getString(BufferedReader br) {
+    private static String getString(BufferedReader br) {
         StringBuilder builder = new StringBuilder();
 
         try {
@@ -212,15 +212,15 @@ public class FileUtils {
         return encrypted;
     }
 
-    public static String find(String module, String xmlO, String key, boolean debug) {
-        String content = xmlO;
+    private static String find(String module, String original, String key, boolean debug) {
+        String content = original;
         String toFind1 = "hidden=\"true\"";
 
         String xml1 = content;
         while (xml1.indexOf(toFind1) > 0) {
             String toAnalyze = xml1.substring(xml1.indexOf(toFind1), (int)(xml1.length()));
 
-            String result = extrac(toAnalyze);
+            String result = extract(toAnalyze);
 
             try {
                 String encrypted = "";
@@ -228,8 +228,17 @@ public class FileUtils {
 
                 String extra = " value_already_encrypted";
                 boolean hasExtra = false;
-
-                encrypted = jniObfuscate(key, result);
+                byte[] arr = jniObfuscate(key, StringEscapeUtils.unescapeJava(result).getBytes(Charset.forName("UTF-8")));
+                String r = "";
+                for (int i = 0; i < arr.length; i++) {
+                    if (arr.length - 1 == i) {
+                        r += arr[i] + "";
+                    } else {
+                        r += arr[i] + ", ";
+                    }
+                }
+                r += "";
+                encrypted = r;
                 toShow = result;
                 content = content.replace(">" + result + "<", ">" + encrypted + "<");
 
@@ -264,7 +273,7 @@ public class FileUtils {
         return content;
     }
 
-    public static void writeFile(File file, String xml) {
+    private static void writeFile(File file, String xml) {
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.getAbsolutePath()),"UTF-8"));
@@ -280,7 +289,7 @@ public class FileUtils {
         }
     }
 
-    public static String extrac(String val) {
+    private static String extract(String val) {
 
         val = val.substring(val.indexOf('>') + 1, val.length());
         val = val.substring(0, val.indexOf("</string>"));
@@ -312,7 +321,7 @@ public class FileUtils {
         }
     }
 
-    public static native String jniObfuscate(String key, String value);
+    public static native byte[] jniObfuscate(String key, byte[] value);
 
     static {
         try {
